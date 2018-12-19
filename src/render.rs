@@ -1,7 +1,7 @@
 use glium::{glutin, Surface};
 use glium::index::PrimitiveType;
 
-fn create_program(display: &glium::Display) -> glium::Program {
+fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
     let program = program!(display,
         450 => {
