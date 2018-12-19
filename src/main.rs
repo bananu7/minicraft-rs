@@ -2,8 +2,9 @@
 extern crate glium;
 
 mod render;
-use render::setup;
+mod world;
 
 fn main() {
-    setup()
+    world::setup();
+    render::setup()
 }
