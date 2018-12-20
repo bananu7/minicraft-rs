@@ -1,41 +1,57 @@
-use std::marker::PhantomData;
-use std::ops;
+mod default_hash_map;
+mod coord;
+use self::coord::WorldCoord;
+use self::coord::OuterChunkCoord;
+use self::coord::InnerChunkCoord;
 
-pub struct Coord<CoordSystemTag> {
-	x: i64,
-	y: i64,
-	z: i64,
+const SIZE: i64 = 16;
 
-	_tag: PhantomData<CoordSystemTag>
+fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
+    let oc = OuterChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
+    let ic = InnerChunkCoord::new(wc.x / SIZE, wc.y / SIZE, wc.z / SIZE);
+    return (oc,ic)
 }
 
-impl<CoordSystemTag> Coord<CoordSystemTag> {
-    pub fn new(x: i64, y: i64, z: i64) -> Self {
-        Coord {
-            x,
-            y,
-            z,
-            _tag: PhantomData,
+enum Orientation {
+    Up, Down, Left, Right, Front, Back
+}
+
+#[derive(Hash, Eq, PartialEq, Clone)]
+struct Block {
+    value: u64,
+    //orientation: Orientation,
+}
+
+#[derive(Hash, Eq, PartialEq, Clone)]
+pub struct Chunk {
+    data: Vec<Block>
+}
+impl Chunk {
+    pub fn new() -> Self {
+        Chunk {
+            data: vec![Block { value: 0 }; SIZE as usize],
         }
     }
 }
 
-impl<Tag> ops::Add for Coord<Tag> {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self {
-        Self::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+impl Chunk {
+    fn get(&self, c: InnerChunkCoord) -> &Block {
+        unsafe {
+            return self.data.get_unchecked((c.x + c.y * SIZE + c.z * SIZE * SIZE) as usize)
+        }
     }
 }
 
+pub struct Field {
+    chunks: default_hash_map::DefaultHashMap<OuterChunkCoord, Chunk>,
+}
 
-struct InnerChunkCoordTag;
-struct OuterChunkCoordTag;
-type InnerChunkCoord = Coord<InnerChunkCoordTag>;
-type OuterChunkCoord = Coord<OuterChunkCoordTag>;
-
-struct World {
-
+impl Field {
+    fn get(&self, c: WorldCoord) -> &Block {
+        let (outer_coord, inner_coord) = from_world_to_local(c);
+        let chunk = self.chunks.get(&outer_coord);
+        return chunk.get(inner_coord)
+    }
 }
 
 pub fn setup() {
