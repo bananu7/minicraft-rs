@@ -1,12 +1,15 @@
 use glium::{glutin, Surface};
 use glium::index::PrimitiveType;
+use glium::{program, uniform, implement_vertex};
+
+//mod camera_fly;
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
     let program = program!(display,
-        450 => {
+        430 => {
             vertex: "
-                #version 450
+                #version 430
                 uniform mat4 matrix;
                 in vec2 position;
                 in vec3 color;
@@ -18,7 +21,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
             ",
 
             fragment: "
-                #version 450
+                #version 430
                 in vec3 vColor;
                 out vec4 f_color;
                 void main() {
@@ -34,6 +37,7 @@ pub fn setup() {
     let mut events_loop = glutin::EventsLoop::new();
     let window = glutin::WindowBuilder::new();
     let context = glutin::ContextBuilder::new();
+    //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
     // building the vertex buffer, which contains all the vertices that we will draw

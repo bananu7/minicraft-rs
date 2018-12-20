@@ -1,5 +1,4 @@
 #[macro_use]
-extern crate glium;
 
 mod render;
 mod world;

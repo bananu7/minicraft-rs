@@ -2,6 +2,9 @@
 name = "minicraft-rs"
 version = "0.1.0"
 authors = ["bananu7"]
+edition = "2018"
 
 [dependencies]
 glium = "*"
+glm = "*"
+num = "*"
