@@ -6,21 +6,28 @@ pub struct Coord<CoordSystemTag> {
 	y: i64,
 	z: i64,
 
-	tag: PhantomData<CoordSystemTag>
+	_tag: PhantomData<CoordSystemTag>
 }
 
-impl<Tag> ops::Add<Coord<Tag>> for Coord<Tag> {
-    type Output = Coord<Tag>;
-
-    fn add(self, _rhs: Coord<Tag>) -> Coord<Tag> {
-    	return Coord::<Tag> { 
-    		x: self.x + _rhs.x,
-    		y: self.y + _rhs.y,
-    		z: self.z + _rhs.z,
-    		tag: PhantomData
-    	}
+impl<CoordSystemTag> Coord<CoordSystemTag> {
+    pub fn new(x: i64, y: i64, z: i64) -> Self {
+        Coord {
+            x,
+            y,
+            z,
+            _tag: PhantomData,
+        }
     }
 }
+
+impl<Tag> ops::Add for Coord<Tag> {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self {
+        Self::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+    }
+}
+
 
 struct InnerChunkCoordTag;
 struct OuterChunkCoordTag;
