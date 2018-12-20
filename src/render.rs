@@ -2,7 +2,7 @@ use glium::{glutin, Surface};
 use glium::index::PrimitiveType;
 use glium::{program, uniform, implement_vertex};
 
-//mod camera_fly;
+mod camera_fly;
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
