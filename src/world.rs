@@ -1,8 +1,10 @@
-mod default_hash_map;
-mod coord;
+pub mod default_hash_map;
+pub mod coord;
+
 use self::coord::WorldCoord;
 use self::coord::OuterChunkCoord;
 use self::coord::InnerChunkCoord;
+use self::default_hash_map::DefaultHashMap;
 
 const SIZE: i64 = 16;
 
@@ -29,7 +31,7 @@ pub struct Chunk {
 impl Chunk {
     pub fn new() -> Self {
         Chunk {
-            data: vec![Block { value: 0 }; SIZE * SIZE * SIZE as usize],
+            data: vec![Block { value: 0 }; (SIZE * SIZE * SIZE) as usize],
         }
     }
 }
@@ -43,17 +45,24 @@ impl Chunk {
 }
 
 pub struct Field {
-    chunks: default_hash_map::DefaultHashMap<OuterChunkCoord, Chunk>,
+    chunks: DefaultHashMap<OuterChunkCoord, Chunk>,
 }
 
 impl Field {
-    fn get(&self, c: WorldCoord) -> &Block {
+    pub fn new() -> Self {
+        Field {
+            chunks: DefaultHashMap::new(Chunk::new())
+        }
+    }
+
+    pub fn get(&self, c: WorldCoord) -> &Block {
         let (outer_coord, inner_coord) = from_world_to_local(c);
         let chunk = self.chunks.get(&outer_coord);
         return chunk.get(inner_coord)
     }
 }
 
-pub fn setup() {
-
+pub fn setup() -> Field {
+    let f = Field::new();
+    return f
 }

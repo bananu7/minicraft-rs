@@ -31,7 +31,7 @@ impl CameraFly {
     }
 
     pub fn fly(&mut self, dist: f32) {
-        let mut m = self.get_rotation_mat();
+        let m = self.get_rotation_mat();
 
         let delta_norm = get_direction_vec(&m);
         let delta = delta_norm * -dist;
