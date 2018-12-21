@@ -10,7 +10,7 @@ struct Vertex {
 }
 implement_vertex!(Vertex, position, color);
 
-struct DisplayChunk<'a> {
+pub struct DisplayChunk<'a> {
     vbo: glium::VertexBuffer<Vertex>,
     ibo: glium::IndexBuffer<u16>,
     display: &'a glium::Display,

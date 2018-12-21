@@ -4,6 +4,8 @@ use glium::{program, uniform, implement_vertex};
 
 mod camera_fly;
 mod render_world;
+use self::render_world::DisplayChunk;
+use crate::world::coord::OuterChunkCoord;
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
@@ -41,52 +43,11 @@ pub fn setup() {
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
-    // building the vertex buffer, which contains all the vertices that we will draw
-    let vertex_buffer = {
-        #[derive(Copy, Clone)]
-        struct Vertex {
-            position: [f32; 2],
-            color: [f32; 3],
-        }
-
-        implement_vertex!(Vertex, position, color);
-
-        glium::VertexBuffer::new(&display,
-            &[
-                Vertex { position: [-0.5, -0.5], color: [0.0, 1.0, 0.0] },
-                Vertex { position: [ 0.0,  0.5], color: [0.0, 0.0, 1.0] },
-                Vertex { position: [ 0.5, -0.5], color: [1.0, 0.0, 0.0] },
-            ]
-        ).unwrap()
-    };
-
-    // building the index buffer
-    let index_buffer = glium::IndexBuffer::new(&display, PrimitiveType::TrianglesList,
-                                               &[0u16, 1, 2]).unwrap();
-
     let program = create_program(&display);
 
-    // Here we draw the black background and triangle to the screen using the previously
-    // initialised resources.
-    //
-    // In this case we use a closure for simplicity, however keep in mind that most serious
-    // applications should probably use a function that takes the resources as an argument.
+    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0));
     let draw = || {
-        // building the uniforms
-        let uniforms = uniform! {
-            matrix: [
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 1.0, 0.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0f32]
-            ]
-        };
-
-        // drawing a frame
-        let mut target = display.draw();
-        target.clear_color(0.0, 0.0, 0.0, 0.0);
-        target.draw(&vertex_buffer, &index_buffer, &program, &uniforms, &Default::default()).unwrap();
-        target.finish().unwrap();
+        display_chunk.draw();
     };
 
     // Draw the triangle to the screen.
