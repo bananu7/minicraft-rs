@@ -29,7 +29,7 @@ pub struct Chunk {
 impl Chunk {
     pub fn new() -> Self {
         Chunk {
-            data: vec![Block { value: 0 }; SIZE as usize],
+            data: vec![Block { value: 0 }; SIZE * SIZE * SIZE as usize],
         }
     }
 }
