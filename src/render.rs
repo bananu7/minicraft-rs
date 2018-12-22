@@ -45,9 +45,9 @@ pub fn setup() {
 
     let program = create_program(&display);
 
-    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0));
+    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &display);
     let draw = || {
-        display_chunk.draw();
+        display_chunk.draw(&program);
     };
 
     // Draw the triangle to the screen.

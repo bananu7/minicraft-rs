@@ -1,5 +1,5 @@
 use crate::world::coord::{OuterChunkCoord};
-use glium::{glutin, Surface};
+use glium::{Surface};
 use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
 
