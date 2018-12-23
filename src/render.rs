@@ -9,22 +9,25 @@ use crate::world::coord::OuterChunkCoord;
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
+    // NVidia: 450
+    // Intel: 430
+    // OSX: 410
     let program = program!(display,
-        430 => {
+        410 => {
             vertex: "
-                #version 430
+                #version 410
                 uniform mat4 matrix;
-                in vec2 position;
+                in vec3 position;
                 in vec3 color;
                 out vec3 vColor;
                 void main() {
-                    gl_Position = vec4(position, 0.0, 1.0) * matrix;
+                    gl_Position = vec4(position, 1.0) * matrix;
                     vColor = color;
                 }
             ",
 
             fragment: "
-                #version 430
+                #version 410
                 in vec3 vColor;
                 out vec4 f_color;
                 void main() {

@@ -3,7 +3,7 @@ use glm::ext::rotate;
 use glm::ext::translate;
 use num;
 
-struct CameraFly
+pub struct CameraFly
 {
     // x,y of look_dir correspond to mouse movements,
     // so .x is rotation around y-axis (yaw), and .y is around x-axis (pitch)
