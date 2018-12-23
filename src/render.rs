@@ -4,6 +4,9 @@ use glium::{program, uniform, implement_vertex};
 
 mod camera_fly;
 mod render_world;
+mod pipeline;
+
+use self::pipeline::Pipeline;
 use self::render_world::DisplayChunk;
 use crate::world::coord::OuterChunkCoord;
 
@@ -47,10 +50,18 @@ pub fn setup() {
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
     let program = create_program(&display);
+    let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
     let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &display);
     let draw = || {
-        display_chunk.draw(&program);
+        display_chunk.draw(&*pipeline.borrow());
+    };
+
+    let update_camera = |position: glutin::dpi::LogicalPosition| {
+        let mut pip = pipeline.borrow_mut();
+        pip.camera.look_dir.x = position.x as f32 / 1280.0;
+        pip.camera.look_dir.y = position.y as f32 / 800.0;
+        print!("pos: {},{}\n", position.x, position.y);
     };
 
     // Draw the triangle to the screen.
@@ -64,6 +75,9 @@ pub fn setup() {
                 glutin::WindowEvent::CloseRequested => return glutin::ControlFlow::Break,
                 // Redraw the triangle when the window is resized.
                 glutin::WindowEvent::Resized(..) => draw(),
+
+                glutin::WindowEvent::CursorMoved { position, .. } => update_camera(position),
+
                 _ => (),
             },
             _ => (),
