@@ -18,7 +18,7 @@ pub struct DisplayChunk<'a> {
 }
 
 impl<'a> DisplayChunk<'a> {
-    pub fn new(coord: OuterChunkCoord, display: &'a glium::Display) -> Self {
+    pub fn new(_coord: OuterChunkCoord, display: &'a glium::Display) -> Self {
         let vertex_buffer = {
             glium::VertexBuffer::new(display,
                 &[

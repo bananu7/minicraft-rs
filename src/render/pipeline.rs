@@ -12,8 +12,8 @@ impl Pipeline {
     pub fn new(program: glium::Program) -> Self {
         Pipeline {
             camera: crate::render::camera_fly::CameraFly {
-                look_dir: vec2(0.0, -0.1),
-                position: vec3(0.0, 0.5, 0.0),
+                look_dir: vec2(0.0, 0.0),
+                position: vec3(-1.0, -1.0, -6.0),
             },
             program: program,
         }

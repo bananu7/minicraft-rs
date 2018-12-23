@@ -54,14 +54,43 @@ pub fn setup() {
 
     let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &display);
     let draw = || {
-        display_chunk.draw(&*pipeline.borrow());
+        let pip = pipeline.borrow();
+        display_chunk.draw(&pip);
     };
 
-    let update_camera = |position: glutin::dpi::LogicalPosition| {
-        let mut pip = pipeline.borrow_mut();
-        pip.camera.look_dir.x = position.x as f32 / 1280.0;
-        pip.camera.look_dir.y = position.y as f32 / 800.0;
-        print!("pos: {},{}\n", position.x, position.y);
+    let update_camera_look = |position: glutin::dpi::LogicalPosition| {
+        {
+            let mut pip = pipeline.borrow_mut();
+            pip.camera.look_dir.x = position.x as f32 / 1280.0;
+            pip.camera.look_dir.y = position.y as f32 / 800.0;
+            //print!("pos: {},{}\n", position.x, position.y);
+        }
+
+        draw();
+    };
+
+    let update_camera_pos = |input: glutin::KeyboardInput| {
+        if input.state == glutin::ElementState::Released {
+            return;
+        }
+        {
+            let mut pip = pipeline.borrow_mut();
+            let key = input.scancode;
+
+            if key == 13 {
+                pip.camera.position.x += 1.0;
+            }
+            else if key == 1 {
+                pip.camera.position.x -= 1.0;
+            }
+            else if key == 0 {
+                pip.camera.position.z += 1.0;
+            }
+            else if key == 2 {
+                pip.camera.position.z -= 1.0;
+            }
+        }
+        draw();
     };
 
     // Draw the triangle to the screen.
@@ -76,7 +105,8 @@ pub fn setup() {
                 // Redraw the triangle when the window is resized.
                 glutin::WindowEvent::Resized(..) => draw(),
 
-                glutin::WindowEvent::CursorMoved { position, .. } => update_camera(position),
+                glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
+                glutin::WindowEvent::KeyboardInput { input, .. } => update_camera_pos(input),
 
                 _ => (),
             },
