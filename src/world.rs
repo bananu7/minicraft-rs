@@ -6,7 +6,7 @@ use self::coord::OuterChunkCoord;
 use self::coord::InnerChunkCoord;
 use self::default_hash_map::DefaultHashMap;
 
-const SIZE: i64 = 16;
+pub const SIZE: i64 = 16;
 
 fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
     let oc = OuterChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
@@ -15,14 +15,14 @@ fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
-enum Orientation {
+pub enum Orientation {
     Up, Down, Left, Right, Front, Back
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
-struct Block {
-    value: u64,
-    orientation: Orientation,
+pub struct Block {
+    pub value: u64,
+    pub orientation: Orientation,
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
@@ -38,13 +38,13 @@ impl Chunk {
 
     pub fn fill(&mut self) {
         for i in 0..SIZE*SIZE*SIZE {
-            if i % 3 == 0 {
+            if i % 13 == 0 {
                 self.data[i as usize] = Block { value: 1, orientation: Orientation::Up };
             }
         }
     }
 
-    fn get(&self, c: InnerChunkCoord) -> &Block {
+    pub fn get(&self, c: &InnerChunkCoord) -> &Block {
         unsafe {
             return self.data.get_unchecked((c.x + c.y * SIZE + c.z * SIZE * SIZE) as usize)
         }
@@ -65,11 +65,16 @@ impl Field {
     pub fn get(&self, c: WorldCoord) -> &Block {
         let (outer_coord, inner_coord) = from_world_to_local(c);
         let chunk = self.chunks.get(&outer_coord);
-        return chunk.get(inner_coord)
+        return chunk.get(&inner_coord)
+    }
+
+    pub fn fill(&mut self) {
+        self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();        
     }
 }
 
 pub fn setup() -> Field {
-    let f = Field::new();
+    let mut f = Field::new();
+    f.fill();
     return f
 }

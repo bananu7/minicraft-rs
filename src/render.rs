@@ -1,5 +1,6 @@
 use glium::{glutin, Surface};
 use glium::{program, uniform, implement_vertex};
+use crate::world::Chunk;
 
 mod camera_fly;
 mod render_world;
@@ -52,7 +53,9 @@ pub fn setup() {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
-    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &display);
+    let mut chunk = Chunk::new();
+    chunk.fill();
+    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &chunk, &display);
     let draw = || {
         let pip = pipeline.borrow();
         display_chunk.draw(&pip);
@@ -77,18 +80,22 @@ pub fn setup() {
             let mut pip = pipeline.borrow_mut();
             let key = input.scancode;
 
-            if key == 13 { // W
-                pip.camera.fly(0.1);
+            // first OSX, 2nd Windows
+            if key == 13 || key == 17 { // W
+                pip.camera.fly(0.2);
             }
-            else if key == 1 { // S
-                pip.camera.fly(-0.1);
+            else if key == 1 || key == 31 { // S
+                pip.camera.fly(-0.2);
             }
-            else if key == 0 {
-                pip.camera.strafe(0.1);
+            else if key == 0 || key == 30 {
+                pip.camera.strafe(0.2);
             }
-            else if key == 2 {
-                pip.camera.strafe(-0.1);
+            else if key == 2 || key == 32 {
+                pip.camera.strafe(-0.2);
             }
+            /*else {
+                print!("{}\n", key);
+            }*/
         }
         draw();
     };
