@@ -13,14 +13,14 @@ pub struct CameraFly
 
 fn get_direction_vec(m: &Mat4) -> Vec3 {
     // third column, {0,1,2} row of a view matrix is "direction"
-    vec3(m.c2.x, m.c2.y, m.c2.z)
+    vec3(-m.c2.x, -m.c2.y, m.c2.z)
 }
 
 impl CameraFly {
     fn get_rotation_mat(&self) -> Mat4 {
         let mut m = num::one::<Mat4>();
-        m = rotate(&m, self.look_dir.x, vec3(0.0, 1.0, 0.0));
         m = rotate(&m, self.look_dir.y, vec3(1.0, 0.0, 0.0));
+        m = rotate(&m, self.look_dir.x, vec3(0.0, 1.0, 0.0));
         return m;
     }
 
@@ -40,6 +40,6 @@ impl CameraFly {
 
     pub fn strafe(&mut self, left: f32) {
         self.position.x -= self.look_dir.x.cos() * left;
-        self.position.z -= self.look_dir.y.sin() * left;
+        self.position.z -= self.look_dir.x.sin() * left;
     }
 }

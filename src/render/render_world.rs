@@ -22,20 +22,25 @@ impl<'a> DisplayChunk<'a> {
         let vertex_buffer = {
             glium::VertexBuffer::new(display,
                 &[
-                    Vertex { position: [0.0, 0.0, 0.2], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [0.0, 1.0, 0.2], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [1.0, 1.0, 0.2], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [1.0, 0.0, 0.2], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
 
-                    Vertex { position: [0.0, 0.0, 0.7], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [0.0, 1.0, 0.7], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [1.0, 1.0, 0.7], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [1.0, 0.0, 0.7], color: [0.8, 0.0, 0.0] },
-
-                    Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
                     Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
                     Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
+
+                    Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
+                    Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
+                    Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
+                    Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
+
+                    Vertex { position: [00.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
+                    Vertex { position: [00.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
+                    Vertex { position: [10.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
+                    Vertex { position: [10.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
                 ]
             ).unwrap()
         };
@@ -46,7 +51,8 @@ impl<'a> DisplayChunk<'a> {
             &[
               0u16, 1, 2,// 0, 2, 3,
               4, 5, 6, 4, 6, 7,
-              //8, 9,10, 8,10,11,
+              8, 9,10, 8,10,11,
+              12,13,14,12,14,15,
             ]
         ).unwrap();
 

@@ -61,7 +61,7 @@ pub fn setup() {
     let update_camera_look = |position: glutin::dpi::LogicalPosition| {
         {
             let mut pip = pipeline.borrow_mut();
-            pip.camera.look_dir.x = ((position.x as f32 / 800.0) - 0.5) * -3.0;
+            pip.camera.look_dir.x = ((position.x as f32 / 800.0) - 0.5) * -2.0;
             pip.camera.look_dir.y = ((position.y as f32 / 600.0) - 0.5) * -3.0;
             //print!("pos: {},{}\n", position.x, position.y);
         }
