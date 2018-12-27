@@ -9,6 +9,7 @@ use glium::{uniform, implement_vertex};
 struct Vertex {
     position: [f32; 3],
     color: [f32; 3],
+    //normal: [f32; 3],
 }
 implement_vertex!(Vertex, position, color);
 
