@@ -14,6 +14,7 @@ fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
     return (oc,ic)
 }
 
+#[derive(Hash, Eq, PartialEq, Clone)]
 enum Orientation {
     Up, Down, Left, Right, Front, Back
 }
@@ -21,7 +22,7 @@ enum Orientation {
 #[derive(Hash, Eq, PartialEq, Clone)]
 struct Block {
     value: u64,
-    //orientation: Orientation,
+    orientation: Orientation,
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
@@ -31,7 +32,7 @@ pub struct Chunk {
 impl Chunk {
     pub fn new() -> Self {
         Chunk {
-            data: vec![Block { value: 0 }; (SIZE * SIZE * SIZE) as usize],
+            data: vec![Block { value: 0, orientation: Orientation::Up }; (SIZE * SIZE * SIZE) as usize],
         }
     }
 }
