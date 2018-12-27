@@ -35,9 +35,15 @@ impl Chunk {
             data: vec![Block { value: 0, orientation: Orientation::Up }; (SIZE * SIZE * SIZE) as usize],
         }
     }
-}
 
-impl Chunk {
+    pub fn fill(&mut self) {
+        for i in 0..SIZE*SIZE*SIZE {
+            if i % 3 == 0 {
+                self.data[i as usize] = Block { value: 1, orientation: Orientation::Up };
+            }
+        }
+    }
+
     fn get(&self, c: InnerChunkCoord) -> &Block {
         unsafe {
             return self.data.get_unchecked((c.x + c.y * SIZE + c.z * SIZE * SIZE) as usize)

@@ -19,52 +19,52 @@ pub struct DisplayChunk<'a> {
 
 impl<'a> DisplayChunk<'a> {
     pub fn new(_coord: OuterChunkCoord, display: &'a glium::Display) -> Self {
+        let vertex_list = [
+            // Front
+            Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
+            Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
+            Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
+            Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
+
+            // Back
+            Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
+            Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
+            Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
+            Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
+
+            // Top
+            Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
+            Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
+            Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
+            Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
+
+            // Bottom
+            Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
+            Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
+            Vertex { position: [1.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
+            Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
+
+            // Right
+            Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.8, 0.0] },
+            Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.8, 0.0] },
+            Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.8, 0.0] },
+            Vertex { position: [1.0, 0.0, 0.0], color: [0.8, 0.8, 0.0] },
+
+            // Left
+            Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.8] },
+            Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.8] },
+            Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.8] },
+            Vertex { position: [0.0, 0.0, 0.0], color: [0.8, 0.0, 0.8] },
+
+            // Ground plane
+            Vertex { position: [00.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
+            Vertex { position: [00.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
+            Vertex { position: [10.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
+            Vertex { position: [10.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
+        ];
+
         let vertex_buffer = {
-            glium::VertexBuffer::new(display,
-                &[
-                    // Front
-                    Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
-                    Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
-
-                    // Back
-                    Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
-                    Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
-
-                    // Top
-                    Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
-                    Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
-                    Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
-                    Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
-
-                    // Bottom
-                    Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
-                    Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
-                    Vertex { position: [1.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
-                    Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
-
-                    // Right
-                    Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.8, 0.0] },
-                    Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.8, 0.0] },
-                    Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.8, 0.0] },
-                    Vertex { position: [1.0, 0.0, 0.0], color: [0.8, 0.8, 0.0] },
-
-                    // Left
-                    Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.8] },
-                    Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.8] },
-                    Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.8] },
-                    Vertex { position: [0.0, 0.0, 0.0], color: [0.8, 0.0, 0.8] },
-
-                    // Ground plane
-                    Vertex { position: [00.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
-                    Vertex { position: [00.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
-                    Vertex { position: [10.0, 0.0, 10.0], color: [0.3, 0.3, 0.3] },
-                    Vertex { position: [10.0, 0.0,  0.0], color: [0.3, 0.3, 0.3] },
-                ]
-            ).unwrap()
+            glium::VertexBuffer::new(display, &vertex_list).unwrap()
         };
 
         let index_buffer = glium::IndexBuffer::new(
