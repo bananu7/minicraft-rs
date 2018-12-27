@@ -1,5 +1,4 @@
 use glium::{glutin, Surface};
-use glium::index::PrimitiveType;
 use glium::{program, uniform, implement_vertex};
 
 mod camera_fly;
@@ -24,7 +23,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
                 in vec3 color;
                 out vec3 vColor;
                 void main() {
-                    gl_Position = vec4(position, 1.0) * matrix;
+                    gl_Position = matrix * vec4(position, 1.0);
                     vColor = color;
                 }
             ",
@@ -44,7 +43,8 @@ fn create_program(display : &glium::Display) -> glium::Program {
 
 pub fn setup() {
     let mut events_loop = glutin::EventsLoop::new();
-    let window = glutin::WindowBuilder::new();
+    let window = glutin::WindowBuilder::new()
+        .with_dimensions(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
     let context = glutin::ContextBuilder::new();
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
@@ -61,8 +61,8 @@ pub fn setup() {
     let update_camera_look = |position: glutin::dpi::LogicalPosition| {
         {
             let mut pip = pipeline.borrow_mut();
-            pip.camera.look_dir.x = position.x as f32 / 1280.0;
-            pip.camera.look_dir.y = position.y as f32 / 800.0;
+            pip.camera.look_dir.x = ((position.x as f32 / 800.0) - 0.5) * -3.0;
+            pip.camera.look_dir.y = ((position.y as f32 / 600.0) - 0.5) * -3.0;
             //print!("pos: {},{}\n", position.x, position.y);
         }
 
@@ -78,16 +78,16 @@ pub fn setup() {
             let key = input.scancode;
 
             if key == 13 {
-                pip.camera.position.x += 1.0;
+                pip.camera.fly(-0.1);
             }
             else if key == 1 {
-                pip.camera.position.x -= 1.0;
+                pip.camera.fly(0.1);
             }
             else if key == 0 {
-                pip.camera.position.z += 1.0;
+                pip.camera.strafe(0.1);
             }
             else if key == 2 {
-                pip.camera.position.z -= 1.0;
+                pip.camera.strafe(-0.1);
             }
         }
         draw();
