@@ -34,7 +34,7 @@ impl CameraFly {
         let m = self.get_rotation_mat();
 
         let delta_norm = get_direction_vec(&m);
-        let delta = delta_norm * -dist;
+        let delta = delta_norm * dist;
         self.position = self.position + delta
     }
 

@@ -77,11 +77,11 @@ pub fn setup() {
             let mut pip = pipeline.borrow_mut();
             let key = input.scancode;
 
-            if key == 13 {
-                pip.camera.fly(-0.1);
-            }
-            else if key == 1 {
+            if key == 13 { // W
                 pip.camera.fly(0.1);
+            }
+            else if key == 1 { // S
+                pip.camera.fly(-0.1);
             }
             else if key == 0 {
                 pip.camera.strafe(0.1);
