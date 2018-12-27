@@ -22,15 +22,20 @@ impl<'a> DisplayChunk<'a> {
         let vertex_buffer = {
             glium::VertexBuffer::new(display,
                 &[
-                    Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 1.0, 0.0] },
-                    Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 1.0] },
-                    Vertex { position: [1.0, 1.0, 0.0], color: [1.0, 0.0, 0.0] },
-                    Vertex { position: [1.0, 0.0, 0.0], color: [1.0, 0.0, 0.0] },
+                    Vertex { position: [0.0, 0.0, 0.2], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [0.0, 1.0, 0.2], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [1.0, 1.0, 0.2], color: [0.0, 0.8, 0.0] },
+                    Vertex { position: [1.0, 0.0, 0.2], color: [0.0, 0.8, 0.0] },
 
-                    Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 0.0] },
-                    Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 1.0] },
-                    Vertex { position: [1.0, 1.0, 1.0], color: [1.0, 0.0, 0.0] },
-                    Vertex { position: [1.0, 0.0, 1.0], color: [1.0, 0.0, 0.0] },
+                    Vertex { position: [0.0, 0.0, 0.7], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [0.0, 1.0, 0.7], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [1.0, 1.0, 0.7], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [1.0, 0.0, 0.7], color: [0.8, 0.0, 0.0] },
+
+                    Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
+                    Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.0, 0.0] },
                 ]
             ).unwrap()
         };
@@ -38,8 +43,10 @@ impl<'a> DisplayChunk<'a> {
         let index_buffer = glium::IndexBuffer::new(
             display,
             PrimitiveType::TrianglesList,
-            &[0u16, 1, 2, 0, 2, 3,
-              4, 5, 6, 4, 6, 7
+            &[
+              0u16, 1, 2,// 0, 2, 3,
+              4, 5, 6, 4, 6, 7,
+              //8, 9,10, 8,10,11,
             ]
         ).unwrap();
 
@@ -57,10 +64,19 @@ impl<'a> DisplayChunk<'a> {
             matrix: matrix,
         };
 
+        let params = glium::DrawParameters {
+            depth: glium::Depth {
+                test: glium::draw_parameters::DepthTest::IfLess,
+                write: true,
+                .. Default::default()
+            },
+            .. Default::default()
+        };
+
         // drawing a frame
         let mut target = self.display.draw();
-        target.clear_color(0.0, 0.0, 0.0, 0.0);
-        target.draw(&self.vbo, &self.ibo, &pip.get_program(), &uniforms, &Default::default()).unwrap();
+        target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
+        target.draw(&self.vbo, &self.ibo, &pip.get_program(), &uniforms, &params).unwrap();
         target.finish().unwrap();
     }
 }

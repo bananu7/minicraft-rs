@@ -13,7 +13,7 @@ impl Pipeline {
         Pipeline {
             camera: crate::render::camera_fly::CameraFly {
                 look_dir: vec2(0.0, 0.0),
-                position: vec3(-1.0, -1.0, -6.0),
+                position: vec3(0.5, 0.5, -5.0),
             },
             program: program,
         }
@@ -31,8 +31,24 @@ impl Pipeline {
             [0.0, 0.0, 0.0, 1.0f32]
         ];
         let cam_view = self.camera.calculate_view();
-        let cam_proj = glm::ext::perspective(3.1416 * 0.5, 1.0, -10.0, 10.0);
-        let cam_vp = cam_proj.mul_m(&cam_view);
+
+        let fov: f32 = 3.141592 / 2.0;
+        let zfar = 1024.0;
+        let znear = 0.1;
+
+        let f = 1.0 / (fov / 2.0).tan();
+        let ar = 800.0/600.0;
+
+        let _cam_proj = glm::ext::perspective(fov, ar, znear, zfar);
+        // note: remember that this is column-major, so the lines of code are actually columns
+        let cam_proj2 = glm::mat4(
+            f / ar,  0.0,              0.0              ,   0.0,
+                     0.0         ,     f ,              0.0              ,   0.0,
+                     0.0         ,    0.0,  (zfar+znear)/(zfar-znear)    ,   1.0,
+                     0.0         ,    0.0, -(2.0*zfar*znear)/(zfar-znear),   0.0,
+        );
+
+        let cam_vp = cam_proj2.mul_m(&cam_view);
 
         for i in 0..4 {
             for j in 0..4 {
