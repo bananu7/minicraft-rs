@@ -4,11 +4,11 @@ use std::hash::Hash;
 use std::hash::Hasher;
 
 pub struct Coord<CoordSystemTag> {
-	pub x: i64,
-	pub y: i64,
-	pub z: i64,
+    pub x: i64,
+    pub y: i64,
+    pub z: i64,
 
-	_tag: PhantomData<CoordSystemTag>
+    _tag: PhantomData<CoordSystemTag>
 }
 
 impl<CoordSystemTag> Coord<CoordSystemTag> {
