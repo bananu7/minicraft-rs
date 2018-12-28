@@ -1,5 +1,15 @@
 
 pub const light_vert_shader : &str = "
+#version 410
+
+uniform mat4 matrix;
+
+in vec3 position;
+in vec3 color;
+in vec3 normal;
+
+out vec3 vColor;
+
 float CalcDirectionalLightFactor(vec3 lightDirection, vec3 normal) {
     float DiffuseFactor = dot(normalize(normal), -lightDirection);
 
@@ -21,9 +31,8 @@ float CalcPointLightFactor(vec3 lightPosition, vec3 normal, vec3 position) {
 
     return CalcDirectionalLightFactor(LightDirection, normal) / Attenuation;
 }
-";
 
-pub const light_main_calc_shader : &str = "
+void main() {
     struct DirectionalLight {
         vec3 Color;
         vec3 AmbientIntensity;
@@ -37,7 +46,7 @@ pub const light_main_calc_shader : &str = "
         vec3 DiffuseIntensity;
         vec3 Position;
     } Light1;
-    
+
     Light0.Color = vec3(1.0, 1.0, 1.0);
     Light0.AmbientIntensity = vec3(0.1, 0.1, 0.1);
     Light0.DiffuseIntensity = vec3(0.8, 0.8, 0.8);
@@ -50,14 +59,11 @@ pub const light_main_calc_shader : &str = "
 
     vec3 MaterialDiffuseReflectivity = vec3(1.0, 1.0, 1.0);
 
-    //mat3 NormalMatrix = inverse(transpose(mat3(View)));
-    //vec3 tnorm = normalize(NormalMatrix * normal);
-    //vec3 tnorm = normal;
-    //vec3 tnorm = (View * vec4(normal, 0.0)).xyz;
-
     vec3 AmbientColor = Light0.AmbientIntensity * Light0.Color;
     //vec3 DiffuseColor = Light0.Color * Light0.DiffuseIntensity * CalcDirectionalLightFactor(Light0.Direction, normal);
-    vec3 DiffuseColor = Light1.Color * Light1.DiffuseIntensity * CalcPointLightFactor(Light1.Position, normal, position);
+    vec3 DiffuseColor = Light1.Color * Light1.DiffuseIntensity * CalcPointLightFactor(Light1.Position, normal, position) ;
 
-    var_lightIntensity = DiffuseColor + AmbientColor;
+    gl_Position = matrix * vec4(position, 1.0);
+    vColor = (DiffuseColor + AmbientColor) * color;
+}
 ";

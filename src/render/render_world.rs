@@ -11,7 +11,7 @@ struct Vertex {
     color: [f32; 3],
     normal: [f32; 3],
 }
-implement_vertex!(Vertex, position, color);
+implement_vertex!(Vertex, position, color, normal);
 
 pub struct DisplayChunk<'a> {
     vbo: glium::VertexBuffer<Vertex>,
