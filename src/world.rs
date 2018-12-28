@@ -1,5 +1,6 @@
 pub mod default_hash_map;
 pub mod coord;
+pub mod raycast;
 
 use self::coord::WorldCoord;
 use self::coord::OuterChunkCoord;
