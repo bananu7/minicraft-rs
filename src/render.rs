@@ -5,6 +5,7 @@ use crate::world::Chunk;
 mod camera_fly;
 mod render_world;
 mod pipeline;
+mod shaders;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayChunk;
@@ -17,18 +18,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
     // OSX: 410
     let program = program!(display,
         410 => {
-            vertex: "
-                #version 410
-                uniform mat4 matrix;
-                in vec3 position;
-                in vec3 color;
-                out vec3 vColor;
-                void main() {
-                    gl_Position = matrix * vec4(position, 1.0);
-                    vColor = color;
-                }
-            ",
-
+            vertex: &(shaders::light_vert_shader),
             fragment: "
                 #version 410
                 in vec3 vColor;

@@ -9,8 +9,9 @@ use glium::{uniform, implement_vertex};
 struct Vertex {
     position: [f32; 3],
     color: [f32; 3],
+    normal: [f32; 3],
 }
-implement_vertex!(Vertex, position, color);
+implement_vertex!(Vertex, position, color, normal);
 
 pub struct DisplayChunk<'a> {
     vbo: glium::VertexBuffer<Vertex>,
@@ -27,49 +28,49 @@ fn add_coord(position: [f32; 3], coord: &InnerChunkCoord) -> [f32; 3] {
 }
 
 fn generate_cube(coord: InnerChunkCoord) -> Vec<Vertex> {
-        let vertex_list = [
-            // Front
-            Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
-            Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
-            Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0] },
-            Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0] },
+    let vertex_list = [
+        // Front
+        Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
 
-            // Back
-            Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
-            Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
-            Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0] },
-            Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0] },
+        // Back
+        Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
 
-            // Top
-            Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
-            Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
-            Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8] },
-            Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8] },
+        // Top
+        Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
 
-            // Bottom
-            Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
-            Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
-            Vertex { position: [1.0, 0.0, 1.0], color: [0.0, 0.8, 0.8] },
-            Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.8] },
+        // Bottom
+        Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
 
-            // Right
-            Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.8, 0.0] },
-            Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.8, 0.0] },
-            Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.8, 0.0] },
-            Vertex { position: [1.0, 0.0, 0.0], color: [0.8, 0.8, 0.0] },
+        // Right
+        Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
 
-            // Left
-            Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.8] },
-            Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.8] },
-            Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.8] },
-            Vertex { position: [0.0, 0.0, 0.0], color: [0.8, 0.0, 0.8] },
-        ];
+        // Left
+        Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
+    ];
 
-        let translated_list = vertex_list.into_iter().map(|v| {
-            Vertex { position: add_coord(v.position, &coord), color: v.color }
-        });
+    let translated_list = vertex_list.into_iter().map(|v| {
+        Vertex { position: add_coord(v.position, &coord), color: v.color, normal: v.normal }
+    });
 
-        return translated_list.collect()
+    return translated_list.collect()
 }
 
 impl<'a> DisplayChunk<'a> {
