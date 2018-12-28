@@ -3,6 +3,7 @@ use std::ops;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+#[derive(Debug)]
 pub struct Coord<CoordSystemTag> {
     pub x: i64,
     pub y: i64,
@@ -48,9 +49,13 @@ impl<Tag> Hash for Coord<Tag> {
 }
 
 
+#[derive(Debug)]
 pub struct InnerChunkCoordTag;
+#[derive(Debug)]
 pub struct OuterChunkCoordTag;
+#[derive(Debug)]
 pub struct WorldCoordTag;
+
 pub type InnerChunkCoord = Coord<InnerChunkCoordTag>;
 pub type OuterChunkCoord = Coord<OuterChunkCoordTag>;
 pub type WorldCoord = Coord<WorldCoordTag>;

@@ -2,6 +2,7 @@
 
 mod render;
 mod world;
+mod tests;
 
 fn main() {
     world::setup();
