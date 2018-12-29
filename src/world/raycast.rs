@@ -30,17 +30,17 @@ fn pos_to_coord(p: Vec3) -> WorldCoord {
 fn d_to_next_plane(dir_part: f32, f: f32) -> f32 {
     if dir_part > 0.0 {
         let m = if f == f.floor() { 1.0 } else { 0.0 };
-        return f - f.floor() - m
+        return (f.ceil() - f + m).abs()
     } else {
         let m = if f == f.ceil() { 1.0 } else { 0.0 };
-        return f.ceil() - f + m
+        return (f - f.floor() - m).abs()
     }
 }
 
 fn determine_next_hit(dir: Vec3, p: Vec3) -> Vec3 {
     let d_to_x_plane = d_to_next_plane(dir.x, p.x);
-    let d_to_y_plane = d_to_next_plane(dir.y, p.x);
-    let d_to_z_plane = d_to_next_plane(dir.x, p.x);
+    let d_to_y_plane = d_to_next_plane(dir.y, p.y);
+    let d_to_z_plane = d_to_next_plane(dir.z, p.z);
 
     let t_to_x_plane = (d_to_x_plane / dir.x).abs();
     let t_to_y_plane = (d_to_y_plane / dir.y).abs();
@@ -48,15 +48,21 @@ fn determine_next_hit(dir: Vec3, p: Vec3) -> Vec3 {
 
     // x
     if t_to_x_plane <= t_to_y_plane && t_to_x_plane <= t_to_z_plane {
-        return p + dir * t_to_x_plane;
+        let mut pp = p + dir * t_to_x_plane;
+        pp.x = pp.x.round();
+        return pp
     }
     // y
     else if t_to_y_plane <= t_to_z_plane && t_to_y_plane <= t_to_z_plane {
-        return p + dir * t_to_y_plane;
+        let mut pp = p + dir * t_to_y_plane;
+        pp.y = pp.y.round();
+        return pp
     }
     // z
     else {
-        return p + dir * t_to_z_plane;
+        let mut pp = p + dir * t_to_z_plane;
+        pp.z = pp.z.round();
+        return pp
     }
 }
 
@@ -68,6 +74,9 @@ pub fn raycast(params: RaycastParams) -> Vec<WorldCoord> {
         let starting_coord = pos_to_coord(p);
         blocks.push(starting_coord);
     }
+
+    //print!("Starting raycast\n");
+    //print!("dir: {} {} {}\n", params.dir.x, params.dir.y, params.dir.z);
 
     p = determine_next_hit(params.dir, p);
     while glm::length(params.pos - p) < params.len {
