@@ -72,6 +72,10 @@ impl Field {
     pub fn fill(&mut self) {
         self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();        
     }
+
+    pub fn get_chunks(&self) -> &DefaultHashMap<OuterChunkCoord, Chunk> {
+        return &self.chunks
+    }
 }
 
 pub fn setup() -> Field {

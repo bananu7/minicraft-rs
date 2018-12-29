@@ -1,6 +1,6 @@
 use crate::render::pipeline::Pipeline;
 use crate::world::coord::{OuterChunkCoord, InnerChunkCoord};
-use crate::world::{Chunk, SIZE};
+use crate::world::{Field, Chunk, SIZE};
 use glium::{Surface};
 use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
@@ -145,3 +145,21 @@ impl<'a> DisplayChunk<'a> {
     }
 }
 
+pub struct DisplayField<'a> {
+    display: &'a glium::Display,
+}
+
+impl<'a> DisplayField<'a> {
+    pub fn draw(self: &Self, field: &Field, pip: &Pipeline) {
+        let chunks = field.get_chunks();
+        let mut display_chunks = Vec::new();
+
+        for (coord, chunk) in chunks.get_map() {
+            display_chunks.push(DisplayChunk::new((*coord).clone(), chunk, self.display));
+        }
+
+        for dc in &display_chunks {
+            dc.draw(pip);
+        }
+    }
+}

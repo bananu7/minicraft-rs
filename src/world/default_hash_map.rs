@@ -28,4 +28,8 @@ impl<K, V> DefaultHashMap<K, V>
     {
         self.map.get(v.borrow()).unwrap_or(&self.default)
     }
+
+    pub fn get_map(&self) -> &HashMap<K, V> {
+        return &self.map
+    }
 }
