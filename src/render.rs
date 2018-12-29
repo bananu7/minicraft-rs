@@ -1,7 +1,8 @@
 use glium::{glutin};
 use glium::{program};
 use glium::{Surface};
-use crate::world::Chunk;
+use std::time::{Duration, Instant};
+use std::thread;
 
 mod camera_fly;
 mod render_world;
@@ -11,8 +12,7 @@ mod shaders;
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
 use crate::world::coord::OuterChunkCoord;
-use crate::world::raycast;
-use crate::world::Field;
+use crate::world::{Chunk, Field, raycast};
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
@@ -67,8 +67,6 @@ pub fn setup(field: &Field) {
             pip.camera.look_dir.y = ((position.y as f32 / 600.0) - 0.5) * -3.0;
             //print!("pos: {},{}\n", position.x, position.y);
         }
-
-        draw();
     };
 
     let update_camera_pos = |input: glutin::KeyboardInput| {
@@ -96,7 +94,6 @@ pub fn setup(field: &Field) {
                 print!("{}\n", key);
             }*/
         }
-        draw();
     };
 
     let click = |state: glutin::ElementState, button: glutin::MouseButton| {
@@ -114,28 +111,54 @@ pub fn setup(field: &Field) {
             });
             */
         }
-        draw();
     };
 
-    draw();
-
     // the main loop
-    events_loop.run_forever(|event| {
-        match event {
-            glutin::Event::WindowEvent { event, .. } => match event {
-                // Break from the main loop when the window is closed.
-                glutin::WindowEvent::CloseRequested => return glutin::ControlFlow::Break,
-                // Redraw the triangle when the window is resized.
-                glutin::WindowEvent::Resized(..) => draw(),
+    let mut accumulator = Duration::new(0, 0);
+    let mut previous_clock = Instant::now();
 
-                glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
-                glutin::WindowEvent::KeyboardInput { input, .. } => update_camera_pos(input),
-                glutin::WindowEvent::MouseInput { state, button, .. } => click(state, button),
+    loop {
+        // events
+        let mut should_break = false;
+        events_loop.poll_events(|event| {
+            match event {
+                glutin::Event::WindowEvent { event, .. } => match event {
+                    // Break from the main loop when the window is closed.
+                    glutin::WindowEvent::CloseRequested => should_break = true,
+                    // Redraw the triangle when the window is resized.
+                    glutin::WindowEvent::Resized(..) => draw(),
 
+                    glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
+                    glutin::WindowEvent::KeyboardInput { input, .. } => update_camera_pos(input),
+                    glutin::WindowEvent::MouseInput { state, button, .. } => click(state, button),
+
+                    _ => (),
+                },
                 _ => (),
-            },
-            _ => (),
+            }
+        });
+
+        if should_break {
+            break;
         }
-        glutin::ControlFlow::Continue
-    });
+
+        // time
+        let now = Instant::now();
+        accumulator += now - previous_clock;
+        previous_clock = now;
+
+        // update
+        let fixed_time_stamp = Duration::new(0, 16666667);
+        while accumulator >= fixed_time_stamp {
+            accumulator -= fixed_time_stamp;
+
+            // if you have a game, update the state here
+        }
+
+        // draw
+        draw();
+
+        // sleep
+        thread::sleep(fixed_time_stamp - accumulator);
+    }
 }
