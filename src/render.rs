@@ -12,7 +12,7 @@ mod shaders;
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
 use crate::world::coord::OuterChunkCoord;
-use crate::world::{Chunk, Field, raycast};
+use crate::world::{Chunk, Block, Field, raycast, Orientation};
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
@@ -35,7 +35,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
     return program
 }
 
-pub fn setup(field: &Field) {
+pub fn setup(field: std::cell::RefCell<Field>) {
     let mut events_loop = glutin::EventsLoop::new();
     let window = glutin::WindowBuilder::new()
         .with_dimensions(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
@@ -54,7 +54,7 @@ pub fn setup(field: &Field) {
             target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
 
             let pip = pipeline.borrow();
-            display_field.draw(&mut target, &display, &field, &pip);
+            display_field.draw(&mut target, &display, &field.borrow(), &pip);
 
             target.finish().unwrap();
         }
@@ -96,20 +96,23 @@ pub fn setup(field: &Field) {
         }
     };
 
-    let click = |state: glutin::ElementState, button: glutin::MouseButton| {
+    let mut click = |state: glutin::ElementState, button: glutin::MouseButton| {
         {
             let pip = pipeline.borrow();
             let pos = pip.camera.position;
             let dir = camera_fly::get_direction_vec(&pip.camera.calculate_view());
 
-            /*
-            let blocks = raycast(RaycastParams {
+            let blocks = raycast::raycast(raycast::RaycastParams {
                 pos: pos,
                 dir: dir,
                 len: 10f32,
                 include_first: true,
             });
-            */
+
+            let mut f = field.borrow_mut();
+            for coord in blocks {
+                f.set(coord, Block { value: 1, orientation: Orientation::Up });
+            }
         }
     };
 

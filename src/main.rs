@@ -5,5 +5,5 @@ mod world;
 mod tests;
 
 fn main() {
-    render::setup(&world::setup())
+    render::setup(std::cell::RefCell::new(world::setup()))
 }

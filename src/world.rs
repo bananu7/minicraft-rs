@@ -54,6 +54,12 @@ impl Chunk {
             return self.data.get_unchecked((c.x + c.y * SIZE + c.z * SIZE * SIZE) as usize)
         }
     }
+
+    pub fn get_mut(&mut self, c: &InnerChunkCoord) -> &mut Block {
+        unsafe {
+            return self.data.get_unchecked_mut((c.x + c.y * SIZE + c.z * SIZE * SIZE) as usize)
+        }
+    }
 }
 
 pub struct Field {
@@ -71,6 +77,11 @@ impl Field {
         let (outer_coord, inner_coord) = from_world_to_local(c);
         let chunk = self.chunks.get(&outer_coord);
         return chunk.get(&inner_coord)
+    }
+
+    pub fn set(&mut self, c: WorldCoord, b: Block) {
+        let (o,i) = from_world_to_local(c);
+        self.chunks.get_mut(o).get_mut(&i).value = b.value;
     }
 
     pub fn fill(&mut self) {
