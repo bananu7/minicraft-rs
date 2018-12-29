@@ -10,8 +10,8 @@ use self::default_hash_map::DefaultHashMap;
 pub const SIZE: i64 = 16;
 
 pub fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
-    let oc = OuterChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
-    let ic = InnerChunkCoord::new(wc.x / SIZE, wc.y / SIZE, wc.z / SIZE);
+    let oc = OuterChunkCoord::new(wc.x / SIZE, wc.y / SIZE, wc.z / SIZE);
+    let ic = InnerChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
     return (oc,ic)
 }
 
