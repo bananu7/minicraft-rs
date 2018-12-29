@@ -11,7 +11,7 @@ pub struct CameraFly
     pub position: Vec3,
 }
 
-fn get_direction_vec(m: &Mat4) -> Vec3 {
+pub fn get_direction_vec(m: &Mat4) -> Vec3 {
     // third column, {0,1,2} row of a view matrix is "direction"
     vec3(-m.c2.x, -m.c2.y, m.c2.z)
 }

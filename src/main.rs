@@ -5,6 +5,5 @@ mod world;
 mod tests;
 
 fn main() {
-    world::setup();
-    render::setup()
+    render::setup(&world::setup())
 }

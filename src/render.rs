@@ -1,5 +1,6 @@
 use glium::{glutin};
 use glium::{program};
+use glium::{Surface};
 use crate::world::Chunk;
 
 mod camera_fly;
@@ -8,8 +9,10 @@ mod pipeline;
 mod shaders;
 
 use self::pipeline::Pipeline;
-use self::render_world::DisplayChunk;
+use self::render_world::DisplayField;
 use crate::world::coord::OuterChunkCoord;
+use crate::world::raycast;
+use crate::world::Field;
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
@@ -32,7 +35,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
     return program
 }
 
-pub fn setup() {
+pub fn setup(field: &Field) {
     let mut events_loop = glutin::EventsLoop::new();
     let window = glutin::WindowBuilder::new()
         .with_dimensions(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
@@ -43,12 +46,18 @@ pub fn setup() {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
-    let mut chunk = Chunk::new();
-    chunk.fill();
-    let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &chunk, &display);
+    //let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &chunk, &display);
+    let display_field = DisplayField { };
     let draw = || {
-        let pip = pipeline.borrow();
-        display_chunk.draw(&pip);
+        {
+            let mut target = display.draw();
+            target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
+
+            let pip = pipeline.borrow();
+            display_field.draw(&mut target, &display, &field, &pip);
+
+            target.finish().unwrap();
+        }
     };
 
     let update_camera_look = |position: glutin::dpi::LogicalPosition| {
@@ -90,7 +99,24 @@ pub fn setup() {
         draw();
     };
 
-    // Draw the triangle to the screen.
+    let click = |state: glutin::ElementState, button: glutin::MouseButton| {
+        {
+            let pip = pipeline.borrow();
+            let pos = pip.camera.position;
+            let dir = camera_fly::get_direction_vec(&pip.camera.calculate_view());
+
+            /*
+            let blocks = raycast(RaycastParams {
+                pos: pos,
+                dir: dir,
+                len: 10f32,
+                include_first: true,
+            });
+            */
+        }
+        draw();
+    };
+
     draw();
 
     // the main loop
@@ -104,6 +130,7 @@ pub fn setup() {
 
                 glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
                 glutin::WindowEvent::KeyboardInput { input, .. } => update_camera_pos(input),
+                glutin::WindowEvent::MouseInput { state, button, .. } => click(state, button),
 
                 _ => (),
             },

@@ -1,6 +1,6 @@
 use crate::render::pipeline::Pipeline;
-use crate::world::coord::{OuterChunkCoord, InnerChunkCoord};
-use crate::world::{Field, Chunk, SIZE};
+use crate::world::coord::{OuterChunkCoord, InnerChunkCoord, WorldCoord};
+use crate::world::{Field, Chunk, SIZE, combine_coord};
 use glium::{Surface};
 use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
@@ -13,13 +13,12 @@ struct Vertex {
 }
 implement_vertex!(Vertex, position, color, normal);
 
-pub struct DisplayChunk<'a> {
+struct DisplayChunk {
     vbo: glium::VertexBuffer<Vertex>,
     ibo: glium::IndexBuffer<u32>,
-    display: &'a glium::Display,
 }
 
-fn add_coord(position: [f32; 3], coord: &InnerChunkCoord) -> [f32; 3] {
+fn add_coord(position: [f32; 3], coord: &WorldCoord) -> [f32; 3] {
     [
         position[0] + coord.x as f32,
         position[1] + coord.y as f32,
@@ -27,7 +26,7 @@ fn add_coord(position: [f32; 3], coord: &InnerChunkCoord) -> [f32; 3] {
     ]
 }
 
-fn generate_cube(coord: InnerChunkCoord) -> Vec<Vertex> {
+fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
     let vertex_list = [
         // Front
         Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
@@ -73,9 +72,9 @@ fn generate_cube(coord: InnerChunkCoord) -> Vec<Vertex> {
     return translated_list.collect()
 }
 
-impl<'a> DisplayChunk<'a> {
+impl DisplayChunk {
     // Generate the display rendition for a chunk
-    pub fn new(_coord: OuterChunkCoord, chunk: &Chunk, display: &'a glium::Display) -> Self {
+    pub fn new(chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> Self {
         let mut vertices = Vec::new();
         let index_list = 
         [
@@ -96,7 +95,7 @@ impl<'a> DisplayChunk<'a> {
                     let coord = InnerChunkCoord::new(x,y,z);
                     let block = chunk.get(&coord);
                     if block.value > 0 {
-                        vertices.extend(generate_cube(coord));
+                        vertices.extend(generate_cube(combine_coord(coord, chunk_coord.clone())));
                         indices.extend(index_list.iter().map(|i|{ i + index_offset * 24}));
                         index_offset += 1;
                     }
@@ -116,12 +115,11 @@ impl<'a> DisplayChunk<'a> {
 
         DisplayChunk {
             vbo: vertex_buffer,
-            ibo: index_buffer,
-            display: display,
+            ibo: index_buffer,            
         }
     }
 
-    pub fn draw(self: &Self, pip: &Pipeline) {
+    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline) {
         // building the uniforms
         let matrix = pip.get_vp_matrix();
         let uniforms = uniform! {
@@ -137,29 +135,25 @@ impl<'a> DisplayChunk<'a> {
             .. Default::default()
         };
 
-        // drawing a frame
-        let mut target = self.display.draw();
-        target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
         target.draw(&self.vbo, &self.ibo, &pip.get_program(), &uniforms, &params).unwrap();
-        target.finish().unwrap();
     }
 }
 
-pub struct DisplayField<'a> {
-    display: &'a glium::Display,
+pub struct DisplayField {
+    
 }
 
-impl<'a> DisplayField<'a> {
-    pub fn draw(self: &Self, field: &Field, pip: &Pipeline) {
+impl DisplayField {
+    pub fn draw(self: &Self, target: &mut glium::Frame, display: &glium::Display, field: &Field, pip: &Pipeline) {
         let chunks = field.get_chunks();
         let mut display_chunks = Vec::new();
 
         for (coord, chunk) in chunks.get_map() {
-            display_chunks.push(DisplayChunk::new((*coord).clone(), chunk, self.display));
+            display_chunks.push(DisplayChunk::new((*coord).clone(), chunk, display));
         }
 
-        for dc in &display_chunks {
-            dc.draw(pip);
+        for dc in &display_chunks {        
+            dc.draw(target, pip);
         }
     }
 }

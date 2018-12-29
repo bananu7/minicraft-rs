@@ -9,10 +9,14 @@ use self::default_hash_map::DefaultHashMap;
 
 pub const SIZE: i64 = 16;
 
-fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
+pub fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
     let oc = OuterChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
     let ic = InnerChunkCoord::new(wc.x / SIZE, wc.y / SIZE, wc.z / SIZE);
     return (oc,ic)
+}
+
+pub fn combine_coord(i: InnerChunkCoord, o: OuterChunkCoord) -> WorldCoord {
+    return WorldCoord::new(i.x + o.x * SIZE, i.y + o.y * SIZE, i.z + o.z * SIZE)
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
@@ -70,7 +74,8 @@ impl Field {
     }
 
     pub fn fill(&mut self) {
-        self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();        
+        self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();
+        self.chunks.get_mut(OuterChunkCoord::new(1,0,0)).fill();
     }
 
     pub fn get_chunks(&self) -> &DefaultHashMap<OuterChunkCoord, Chunk> {
