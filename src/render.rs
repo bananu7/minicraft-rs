@@ -1,5 +1,5 @@
-use glium::{glutin, Surface};
-use glium::{program, uniform, implement_vertex};
+use glium::{glutin};
+use glium::{program};
 use crate::world::Chunk;
 
 mod camera_fly;
@@ -18,7 +18,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
     // OSX: 410
     let program = program!(display,
         410 => {
-            vertex: &(shaders::light_vert_shader),
+            vertex: &(shaders::LIGHT_VERT_SHADER),
             fragment: "
                 #version 410
                 in vec3 vColor;

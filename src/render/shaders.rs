@@ -1,5 +1,5 @@
 
-pub const light_vert_shader : &str = "
+pub const LIGHT_VERT_SHADER : &str = "
 #version 410
 
 uniform mat4 matrix;
