@@ -8,6 +8,7 @@ mod camera_fly;
 mod render_world;
 mod pipeline;
 mod shaders;
+mod bmfont;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
