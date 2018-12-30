@@ -13,7 +13,8 @@ pub struct CameraFly
 
 pub fn get_direction_vec(m: &Mat4) -> Vec3 {
     // third column, {0,1,2} row of a view matrix is "direction"
-    vec3(-m.c2.x, -m.c2.y, m.c2.z)
+    //vec3(-m.c2.x, -m.c2.y, m.c2.z)
+    vec3(m.c0.z, m.c1.z, m.c2.z)
 }
 
 impl CameraFly {

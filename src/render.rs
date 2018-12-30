@@ -45,7 +45,10 @@ pub fn setup(field: std::cell::RefCell<Field>) {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
-    //let display_chunk = DisplayChunk::new(OuterChunkCoord::new(0,0,0), &chunk, &display);
+    // TODO: make this actual game state with a field saying whether
+    // the cursor must be grabbed or not
+    let mut cursor_grabbed = false;
+
     let display_field = DisplayField { };
     let draw = || {
         {
@@ -59,16 +62,18 @@ pub fn setup(field: std::cell::RefCell<Field>) {
         }
     };
 
-    let update_camera_look = |position: glutin::dpi::LogicalPosition| {
+    //let update_camera_look = |position: glutin::dpi::LogicalPosition| {
+    let update_camera_look = |position: (f64, f64)| {
         {
             let mut pip = pipeline.borrow_mut();
-            pip.camera.look_dir.x = ((position.x as f32 / 800.0) - 0.5) * -2.0;
-            pip.camera.look_dir.y = ((position.y as f32 / 600.0) - 0.5) * -3.0;
+            let (x,y) = position;
+            pip.camera.look_dir.x -= x as f32 / 1000.0;
+            pip.camera.look_dir.y -= y as f32 / 1000.0;
             //print!("pos: {},{}\n", position.x, position.y);
         }
     };
 
-    let update_camera_pos = |input: glutin::KeyboardInput| {
+    let mut update_camera_pos = |input: glutin::KeyboardInput| {
         if input.state == glutin::ElementState::Released {
             return;
         }
@@ -83,11 +88,21 @@ pub fn setup(field: std::cell::RefCell<Field>) {
             else if key == 1 || key == 31 { // S
                 pip.camera.fly(-0.2);
             }
-            else if key == 0 || key == 30 {
+            else if key == 0 || key == 30 { // A
                 pip.camera.strafe(0.2);
             }
-            else if key == 2 || key == 32 {
+            else if key == 2 || key == 32 { // D
                 pip.camera.strafe(-0.2);
+            }
+            else if key == 3 || key == 33 { // F
+                cursor_grabbed = !cursor_grabbed;
+
+                match display.gl_window().grab_cursor(cursor_grabbed) {
+                    Err(e) => println!("Window grab({}) error: {}", cursor_grabbed, e),
+                    _ => println!("Window grab succeeded")
+                }
+
+                display.gl_window().hide_cursor(cursor_grabbed);
             }
             /*else {
                 print!("{}\n", key);
@@ -134,12 +149,16 @@ pub fn setup(field: std::cell::RefCell<Field>) {
                     // Redraw the triangle when the window is resized.
                     glutin::WindowEvent::Resized(..) => draw(),
 
-                    glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
+                    //glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
                     glutin::WindowEvent::KeyboardInput { input, .. } => update_camera_pos(input),
                     glutin::WindowEvent::MouseInput { state, button, .. } => click(state, button),
 
                     _ => (),
                 },
+                glutin::Event::DeviceEvent { event, .. } => match event {
+                    glutin::DeviceEvent::MouseMotion { delta } => update_camera_look(delta),
+                    _ => (),
+                }
                 _ => (),
             }
         });
