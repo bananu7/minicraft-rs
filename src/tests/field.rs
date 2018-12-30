@@ -50,20 +50,27 @@ fn test_from_world_to_local_cross() {
 fn test_from_world_to_local_negative() {
     assert_eq!(
         from_world_to_local(w(-1,0,0)),
-        (o(-1,0,0), i(0,0,0)),
+        (o(-1,0,0), i(SIZE-1,0,0)),
         "world x: -1"
     );
 
     assert_eq!(
         from_world_to_local(w(-SIZE,0,0)),
-        (o(0,0,0), i(SIZE-1,0,0)),
+        (o(-1,0,0), i(0,0,0)),
         "world x: -SIZE ({})",
         -SIZE
     );
 
     assert_eq!(
         from_world_to_local(w(-SIZE - 1,0,0)),
-        (o(-1,0,0), i(0,0,0)),
+        (o(-2,0,0), i(SIZE-1,0,0)),
+        "world x: -SIZE-1 ({})",
+        -SIZE-1
+    );
+
+    assert_eq!(
+        from_world_to_local(w(- 2*SIZE,0,0)),
+        (o(-2,0,0), i(0,0,0)),
         "world x: -SIZE-1 ({})",
         -SIZE-1
     );

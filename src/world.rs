@@ -9,10 +9,24 @@ use self::default_hash_map::DefaultHashMap;
 
 pub const SIZE: i64 = 16;
 
+pub fn from_world_to_inner(wc: WorldCoord) -> InnerChunkCoord {
+    InnerChunkCoord::new(
+        if wc.x >= 0 { wc.x % SIZE } else { (wc.x % SIZE + SIZE) % SIZE },
+        if wc.y >= 0 { wc.y % SIZE } else { (wc.y % SIZE + SIZE) % SIZE },
+        if wc.z >= 0 { wc.z % SIZE } else { (wc.z % SIZE + SIZE) % SIZE }
+    )
+}
+
+pub fn from_world_to_outer(wc: WorldCoord) -> OuterChunkCoord {
+    OuterChunkCoord::new(
+        if wc.x >= 0 { wc.x / SIZE } else { (wc.x + 1) / SIZE - 1 },
+        if wc.y >= 0 { wc.y / SIZE } else { (wc.y + 1) / SIZE - 1 },
+        if wc.z >= 0 { wc.z / SIZE } else { (wc.z + 1) / SIZE - 1 }
+    )
+}
+
 pub fn from_world_to_local(wc: WorldCoord) -> (OuterChunkCoord, InnerChunkCoord) {
-    let oc = OuterChunkCoord::new(wc.x / SIZE, wc.y / SIZE, wc.z / SIZE);
-    let ic = InnerChunkCoord::new(wc.x % SIZE, wc.y % SIZE, wc.z % SIZE);
-    return (oc,ic)
+    return (from_world_to_outer(wc.clone()),from_world_to_inner(wc))
 }
 
 pub fn combine_coord(i: InnerChunkCoord, o: OuterChunkCoord) -> WorldCoord {
