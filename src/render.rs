@@ -3,6 +3,7 @@ use glium::{program};
 use glium::{Surface};
 use std::time::{Duration, Instant};
 use std::thread;
+use std::path::Path;
 
 mod camera_fly;
 mod render_world;
@@ -12,6 +13,7 @@ mod bmfont;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
+use self::bmfont::*;
 use crate::world::{Block, Field, raycast, Orientation};
 
 fn create_program(display : &glium::Display) -> glium::Program {
@@ -46,6 +48,11 @@ pub fn setup(field: std::cell::RefCell<Field>) {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
+    let font_descriptor = FontDescriptor::load(Path::new("src/data/font.xml"));
+    match font_descriptor {
+        Ok(fd) => println!("Loading font succeeded, {} characters loaded", fd.count()),
+        Err(e) => println!("Loading font failed: {}", e),
+    }
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
     let mut cursor_grabbed = false;
