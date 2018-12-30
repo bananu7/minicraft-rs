@@ -5,6 +5,7 @@ use glm::*;
 #[cfg(test)]
 mod field;
 
+#[allow(dead_code)]
 fn generate_test_coord_vec(points: Vec<[i64;3]>) -> Vec<WorldCoord> {
     //points.iter().map(|p|{ WorldCoord::new(p[0], p[1], p[2])}).collect()
     let mut crds = Vec::new();

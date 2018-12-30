@@ -11,8 +11,7 @@ mod shaders;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
-use crate::world::coord::OuterChunkCoord;
-use crate::world::{Chunk, Block, Field, raycast, Orientation};
+use crate::world::{Block, Field, raycast, Orientation};
 
 fn create_program(display : &glium::Display) -> glium::Program {
     // compiling shaders and linking them together
@@ -96,7 +95,11 @@ pub fn setup(field: std::cell::RefCell<Field>) {
         }
     };
 
-    let mut click = |state: glutin::ElementState, button: glutin::MouseButton| {
+    let click = |state: glutin::ElementState, _button: glutin::MouseButton| {
+        if state != glutin::ElementState::Pressed {
+            return
+        }
+
         {
             let pip = pipeline.borrow();
             let pos = pip.camera.position;
