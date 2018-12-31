@@ -131,7 +131,7 @@ impl DisplayFont {
             let cd = self.fd.data.get(&(c as i64));
 
 
-            if let (Some(n)) = n {
+            if let Some(n) = n {
                 let ci = *n as usize * 4;
 
                 self.print_single(target, ci, [x_offset, 0.0])?;

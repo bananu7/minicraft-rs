@@ -61,7 +61,7 @@ pub fn setup(field: std::cell::RefCell<Field>) {
 
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
-    let mut cursor_grabbed = RefCell::new(false);
+    let cursor_grabbed = RefCell::new(false);
 
     let display_field = DisplayField { };
     let draw = || {
@@ -89,7 +89,7 @@ pub fn setup(field: std::cell::RefCell<Field>) {
         }
     };
 
-    let mut update_camera_pos = |input: glutin::KeyboardInput| {
+    let update_camera_pos = |input: glutin::KeyboardInput| {
         if input.state == glutin::ElementState::Released {
             return;
         }
