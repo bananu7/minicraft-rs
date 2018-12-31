@@ -15,6 +15,8 @@ mod bmfont_render;
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
 use self::bmfont::*;
+use self::bmfont_render::*;
+
 use crate::world::{Block, Field, raycast, Orientation};
 
 fn create_program(display : &glium::Display) -> glium::Program {
@@ -49,11 +51,13 @@ pub fn setup(field: std::cell::RefCell<Field>) {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
-    let font_descriptor = FontDescriptor::load(Path::new("src/data/font.xml"));
-    match font_descriptor {
+    let font_descriptor = FontDescriptor::load(Path::new("data/font.xml"));
+    /*match font_descriptor {
         Ok(fd) => println!("Loading font succeeded, {} characters loaded", fd.count()),
         Err(e) => println!("Loading font failed: {}", e),
-    }
+    }*/
+    let font_display = DisplayFont::new(font_descriptor.unwrap(), &display);
+
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
     let mut cursor_grabbed = false;
@@ -66,6 +70,8 @@ pub fn setup(field: std::cell::RefCell<Field>) {
 
             let pip = pipeline.borrow();
             display_field.draw(&mut target, &display, &field.borrow(), &pip);
+
+            font_display.print(&mut target, "t");
 
             target.finish().unwrap();
         }
