@@ -4,19 +4,21 @@ use roxmltree::*;
 
 #[derive(Debug, Clone, Copy)]
 pub struct CharDescriptor {
-    id: i64,
-    x: i64, y: i64,
-    width: i64, height: i64,
+    pub id: i64,
+    pub x: i64, pub y: i64,
+    pub width: i64, pub height: i64,
 
-    x_offset: i64, y_offset: i64,
-    x_advance: i64,
+    pub x_offset: i64, pub y_offset: i64,
+    pub x_advance: i64,
 
-    num: i64,
+    pub num: i64,
 }
 
+#[derive(Debug, Clone)]
 pub struct FontDescriptor {
-    data: HashMap<i64, CharDescriptor>,
-    x_size: i64, y_size: i64,
+    pub data: HashMap<i64, CharDescriptor>,
+    pub x_size: i64, 
+    pub y_size: i64,
 }
 
 fn load_file(path: &std::path::Path) -> String {

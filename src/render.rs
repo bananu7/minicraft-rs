@@ -10,6 +10,7 @@ mod render_world;
 mod pipeline;
 mod shaders;
 mod bmfont;
+mod bmfont_render;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
@@ -25,7 +26,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
         410 => {
             vertex: &(shaders::LIGHT_VERT_SHADER),
             fragment: "
-                #version 410
+                #version 410 core
                 in vec3 vColor;
                 out vec4 f_color;
                 void main() {
