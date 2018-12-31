@@ -4,6 +4,7 @@ use glium::{Surface};
 use std::time::{Duration, Instant};
 use std::thread;
 use std::path::Path;
+use std::cell::RefCell;
 
 mod camera_fly;
 mod render_world;
@@ -60,7 +61,7 @@ pub fn setup(field: std::cell::RefCell<Field>) {
 
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
-    let mut cursor_grabbed = false;
+    let mut cursor_grabbed = RefCell::new(false);
 
     let display_field = DisplayField { };
     let draw = || {
@@ -110,14 +111,15 @@ pub fn setup(field: std::cell::RefCell<Field>) {
                 pip.camera.strafe(-0.2);
             }
             else if key == 3 || key == 33 { // F
-                cursor_grabbed = !cursor_grabbed;
+                let mut cg = cursor_grabbed.borrow_mut();
+                *cg = !(*cg);
 
-                match display.gl_window().grab_cursor(cursor_grabbed) {
-                    Err(e) => println!("Window grab({}) error: {}", cursor_grabbed, e),
+                match display.gl_window().grab_cursor(*cg) {
+                    Err(e) => println!("Window grab({}) error: {}", *cg, e),
                     _ => println!("Window grab succeeded")
                 }
 
-                display.gl_window().hide_cursor(cursor_grabbed);
+                display.gl_window().hide_cursor(*cg);
             }
             /*else {
                 print!("{}\n", key);
@@ -171,7 +173,11 @@ pub fn setup(field: std::cell::RefCell<Field>) {
                     _ => (),
                 },
                 glutin::Event::DeviceEvent { event, .. } => match event {
-                    glutin::DeviceEvent::MouseMotion { delta } => update_camera_look(delta),
+                    glutin::DeviceEvent::MouseMotion { delta } => {
+                        if *cursor_grabbed.borrow() { // this only works in FPP mode
+                            update_camera_look(delta)
+                        }
+                    },
                     _ => (),
                 }
                 _ => (),
