@@ -1,6 +1,6 @@
 
 pub const LIGHT_VERT_SHADER : &str = "
-#version 410
+#version 410 core
 
 uniform mat4 matrix;
 

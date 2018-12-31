@@ -3,14 +3,21 @@ use glium::{program};
 use glium::{Surface};
 use std::time::{Duration, Instant};
 use std::thread;
+use std::path::Path;
+use std::cell::RefCell;
 
 mod camera_fly;
 mod render_world;
 mod pipeline;
 mod shaders;
+mod bmfont;
+mod bmfont_render;
 
 use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
+use self::bmfont::*;
+use self::bmfont_render::*;
+
 use crate::world::{Block, Field, raycast, Orientation};
 
 fn create_program(display : &glium::Display) -> glium::Program {
@@ -22,7 +29,7 @@ fn create_program(display : &glium::Display) -> glium::Program {
         410 => {
             vertex: &(shaders::LIGHT_VERT_SHADER),
             fragment: "
-                #version 410
+                #version 410 core
                 in vec3 vColor;
                 out vec4 f_color;
                 void main() {
@@ -45,9 +52,16 @@ pub fn setup(field: std::cell::RefCell<Field>) {
     let program = create_program(&display);
     let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
+    let font_descriptor = FontDescriptor::load(Path::new("data/font.xml"));
+    /*match font_descriptor {
+        Ok(fd) => println!("Loading font succeeded, {} characters loaded", fd.count()),
+        Err(e) => println!("Loading font failed: {}", e),
+    }*/
+    let font_display = DisplayFont::new(font_descriptor.unwrap(), &display);
+
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
-    let mut cursor_grabbed = false;
+    let mut cursor_grabbed = RefCell::new(false);
 
     let display_field = DisplayField { };
     let draw = || {
@@ -57,6 +71,8 @@ pub fn setup(field: std::cell::RefCell<Field>) {
 
             let pip = pipeline.borrow();
             display_field.draw(&mut target, &display, &field.borrow(), &pip);
+
+            font_display.print(&mut target, "Hello, world!");
 
             target.finish().unwrap();
         }
@@ -95,14 +111,15 @@ pub fn setup(field: std::cell::RefCell<Field>) {
                 pip.camera.strafe(-0.2);
             }
             else if key == 3 || key == 33 { // F
-                cursor_grabbed = !cursor_grabbed;
+                let mut cg = cursor_grabbed.borrow_mut();
+                *cg = !(*cg);
 
-                match display.gl_window().grab_cursor(cursor_grabbed) {
-                    Err(e) => println!("Window grab({}) error: {}", cursor_grabbed, e),
+                match display.gl_window().grab_cursor(*cg) {
+                    Err(e) => println!("Window grab({}) error: {}", *cg, e),
                     _ => println!("Window grab succeeded")
                 }
 
-                display.gl_window().hide_cursor(cursor_grabbed);
+                display.gl_window().hide_cursor(*cg);
             }
             /*else {
                 print!("{}\n", key);
@@ -156,7 +173,11 @@ pub fn setup(field: std::cell::RefCell<Field>) {
                     _ => (),
                 },
                 glutin::Event::DeviceEvent { event, .. } => match event {
-                    glutin::DeviceEvent::MouseMotion { delta } => update_camera_look(delta),
+                    glutin::DeviceEvent::MouseMotion { delta } => {
+                        if *cursor_grabbed.borrow() { // this only works in FPP mode
+                            update_camera_look(delta)
+                        }
+                    },
                     _ => (),
                 }
                 _ => (),
