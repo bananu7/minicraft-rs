@@ -71,7 +71,7 @@ pub fn setup(field: std::cell::RefCell<Field>) {
             let pip = pipeline.borrow();
             display_field.draw(&mut target, &display, &field.borrow(), &pip);
 
-            font_display.print(&mut target, "t");
+            font_display.print(&mut target, "u");
 
             target.finish().unwrap();
         }

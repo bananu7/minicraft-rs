@@ -4,6 +4,7 @@ use glium::{Surface};
 use glium::{uniform, program, implement_vertex};
 
 use std::io::Cursor;
+use std::collections::HashMap;
 
 #[derive(Copy, Clone)]
 struct Vertex {
@@ -42,6 +43,7 @@ fn create_font_program(display : &glium::Display) -> glium::Program {
 
 pub struct DisplayFont {
     fd: FontDescriptor,
+    char_to_num: HashMap<i64, i64>,
 
     vbo: glium::VertexBuffer<Vertex>,
     program: glium::Program,
@@ -52,12 +54,10 @@ impl DisplayFont {
     // Generate the display rendition for a chunk
     pub fn new(fd: FontDescriptor, display: &glium::Display) -> Self {
         let mut verts = Vec::new();
+        let mut char_to_num = HashMap::new();
+        let mut num = 0;
 
-        for (_i,c) in &fd.data {
-            if *_i != 106 {
-                continue
-            }
-
+        for (i,c) in &fd.data {
             let w = c.width as f32;
             let h = c.height as f32;
             let xs = fd.x_size as f32;
@@ -67,10 +67,14 @@ impl DisplayFont {
             let xo = c.x_offset as f32;
             let yo = c.y_offset as f32;
 
+            /*
             println!("x: {} xs: {}, w: {}", x, xs, w);
             println!("y: {} ys: {}, h: {}", y, ys, h);
 
-            println!("y/ys: {} (y+h)/ys {}", y/ys, (y+h)/ys);
+            println!("y/ys: {} (y+h)/ys {}", y/ys, (y+h)/ys);*/
+
+            char_to_num.insert(*i, num);
+            num += 1;
 
             verts.append(&mut vec![
                 Vertex { position: [0.0, 0.0],
@@ -96,6 +100,7 @@ impl DisplayFont {
 
         DisplayFont {
             fd: fd,
+            char_to_num: char_to_num,
             vbo: vertex_buffer,
             program: create_font_program(&display),
             texture: opengl_texture,
@@ -121,7 +126,11 @@ impl DisplayFont {
         };
 
         for c in s.chars() {
-            target.draw(&self.vbo, &NO_INDICES, &self.program, &uniforms, &draw_parameters)?;
+            let n = self.char_to_num.get(&(c as i64));
+            if let (Some(n)) = n {
+                let ci = *n as usize * 4;
+                target.draw(self.vbo.slice(ci..(ci+4)).unwrap(), &NO_INDICES, &self.program, &uniforms, &draw_parameters)?;
+            }
         }
 
         Ok(())
