@@ -13,8 +13,7 @@ mod bmfont_render;
 use self::bmfont::*;
 use self::bmfont_render::*;
 
-use crate::game::BuildShipGameState;
-use crate::game::traits::GameState;
+use crate::game::Game;
 
 pub fn setup() {
     let mut events_loop = glutin::EventsLoop::new();
@@ -37,7 +36,7 @@ pub fn setup() {
     let mut accumulator = Duration::new(0, 0);
     let mut previous_clock = Instant::now();
 
-    let mut game_state = BuildShipGameState::new(&display);
+    let mut game_state = Game::new(&display);
 
     loop {
         // events
