@@ -2,8 +2,9 @@
 
 mod render;
 mod world;
+mod game;
 mod tests;
 
 fn main() {
-    render::setup(std::cell::RefCell::new(world::setup()))
+    render::setup()
 }
