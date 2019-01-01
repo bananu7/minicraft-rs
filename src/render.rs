@@ -1,9 +1,7 @@
-use crate::world::Field;
 use glium::{glutin};
 use std::time::{Duration, Instant};
 use std::thread;
 use std::path::Path;
-use std::cell::RefCell;
 
 pub mod camera;
 pub mod render_world;
@@ -15,7 +13,8 @@ mod bmfont_render;
 use self::bmfont::*;
 use self::bmfont_render::*;
 
-use crate::game::*;
+use crate::game::BuildShipGameState;
+use crate::game::traits::GameState;
 
 pub fn setup() {
     let mut events_loop = glutin::EventsLoop::new();
@@ -30,7 +29,7 @@ pub fn setup() {
         Ok(fd) => println!("Loading font succeeded, {} characters loaded", fd.count()),
         Err(e) => println!("Loading font failed: {}", e),
     }*/
-    let font_display = DisplayFont::new(font_descriptor.unwrap(), &display);
+    let _font_display = DisplayFont::new(font_descriptor.unwrap(), &display);
 
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
