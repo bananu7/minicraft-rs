@@ -3,6 +3,8 @@ use glm::ext::rotate;
 use glm::ext::translate;
 use num;
 
+use super::traits::Camera;
+
 pub struct CameraFly
 {
     // x,y of look_dir correspond to mouse movements,
@@ -25,12 +27,6 @@ impl CameraFly {
         return m;
     }
 
-    pub fn calculate_view(&self) -> Mat4 {
-        let mut m = self.get_rotation_mat();
-        m = translate(&m, -self.position);
-        return m
-    }
-
     pub fn fly(&mut self, dist: f32) {
         let m = self.get_rotation_mat();
 
@@ -42,5 +38,13 @@ impl CameraFly {
     pub fn strafe(&mut self, left: f32) {
         self.position.x -= self.look_dir.x.cos() * left;
         self.position.z -= self.look_dir.x.sin() * left;
+    }
+}
+
+impl Camera for CameraFly {
+    fn calculate_view(&self) -> Mat4 {
+        let mut m = self.get_rotation_mat();
+        m = translate(&m, -self.position);
+        return m
     }
 }

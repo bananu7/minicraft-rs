@@ -6,7 +6,7 @@ use std::thread;
 use std::path::Path;
 use std::cell::RefCell;
 
-mod camera_fly;
+mod camera;
 mod render_world;
 mod pipeline;
 mod shaders;
@@ -17,6 +17,7 @@ use self::pipeline::Pipeline;
 use self::render_world::DisplayField;
 use self::bmfont::*;
 use self::bmfont_render::*;
+use self::camera::*;
 
 use crate::world::{Block, Field, raycast, Orientation};
 
@@ -135,7 +136,7 @@ pub fn setup(field: std::cell::RefCell<Field>) {
         {
             let pip = pipeline.borrow();
             let pos = pip.camera.position;
-            let dir = camera_fly::get_direction_vec(&pip.camera.calculate_view());
+            let dir = self::camera::camera_fly::get_direction_vec(&pip.camera.calculate_view());
 
             let blocks = raycast::raycast(raycast::RaycastParams {
                 pos: pos,

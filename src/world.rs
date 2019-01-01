@@ -33,6 +33,7 @@ pub fn combine_coord(i: InnerChunkCoord, o: OuterChunkCoord) -> WorldCoord {
     return WorldCoord::new(i.x + o.x * SIZE, i.y + o.y * SIZE, i.z + o.z * SIZE)
 }
 
+#[allow(dead_code)]
 #[derive(Hash, Eq, PartialEq, Clone)]
 pub enum Orientation {
     Up, Down, Left, Right, Front, Back
