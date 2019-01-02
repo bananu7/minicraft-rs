@@ -4,12 +4,14 @@ use glium::Surface;
 
 pub struct MenuState<'a> {
     display: &'a glium::backend::glutin::Display,
+    change_state: Option<GameStateTag>,
 }
 
 impl<'a> MenuState<'a> {
     pub fn new(display: &'a glium::backend::glutin::Display) -> Self {
         MenuState {
             display: display,
+            change_state: None,
         }
     }
 }
@@ -29,15 +31,20 @@ impl<'a> GameState for MenuState<'a> {
     }
 
     //let update_camera_look = |position: glutin::dpi::LogicalPosition| {
-    fn react_to_mouse_move(&mut self, position: (f64, f64)) {
+    fn react_to_mouse_move(&mut self, _position: (f64, f64)) {
     }
 
-    fn react_to_keyboard(&mut self, input: glutin::KeyboardInput) {
+    fn react_to_keyboard(&mut self, _input: glutin::KeyboardInput) {
     }
 
     fn react_to_mouse_click(&mut self, state: glutin::ElementState, _button: glutin::MouseButton) {
         if state != glutin::ElementState::Pressed {
             return
         }
+        self.change_state = Some(GameStateTag::BuildShip);
+    }
+
+    fn update(&mut self) -> Option<GameStateTag> {
+        self.change_state.clone()
     }
 }

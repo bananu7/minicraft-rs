@@ -6,4 +6,11 @@ pub trait GameState {
     fn react_to_keyboard(&mut self, input: glutin::KeyboardInput);
 
     fn draw(&self) -> Result<(), glium::DrawError>;
+    fn update(&mut self) -> Option<GameStateTag>;
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum GameStateTag {
+    Menu,
+    BuildShip,
 }

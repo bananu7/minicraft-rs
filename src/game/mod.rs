@@ -18,6 +18,13 @@ pub struct Game<'a> {
     display: &'a glium::Display,
 }
 
+fn construct_next_state<'a>(tag: GameStateTag, display: &'a glium::Display) -> Box<dyn GameState + 'a> {
+    match tag {
+        GameStateTag::BuildShip => Box::new(BuildShipGameState::new(display)),
+        GameStateTag::Menu => Box::new(MenuState::new(display)),
+    }
+}
+
 impl<'a> Game<'a> {
     pub fn new(display: &'a glium::Display) -> Self {
         Game {
@@ -40,7 +47,16 @@ impl<'a> Game<'a> {
     }
 
     pub fn react_to_mouse_click(&mut self, state: glutin::ElementState, button: glutin::MouseButton) {
-        //self.current_state.react_to_mouse_click(state, button)
-        self.current_state = Box::new(BuildShipGameState::new(self.display))
+        self.current_state.react_to_mouse_click(state, button)
+    }
+
+    pub fn update(&mut self) {
+        let change_state = self.current_state.update();
+        match change_state {
+            Some (next_state) => {
+                self.current_state = construct_next_state(next_state, self.display);
+            }
+            None => (),
+        }   
     }
 }

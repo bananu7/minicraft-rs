@@ -79,7 +79,7 @@ pub fn setup() {
         while accumulator >= fixed_time_stamp {
             accumulator -= fixed_time_stamp;
 
-            // if you have a game, update the state here
+            game_state.update();
         }
 
         // draw

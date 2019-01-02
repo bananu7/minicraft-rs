@@ -16,6 +16,7 @@ pub struct BuildShipGameState<'a> {
     display_field: DisplayField,
     field: RefCell<Field>,
     display: &'a glium::Display,
+    should_exit: bool,
 }
 
 pub fn create_program(display : &glium::Display) -> glium::Program {
@@ -50,6 +51,7 @@ impl<'a> BuildShipGameState<'a> {
             cursor_grabbed: RefCell::new(false),
             display_field: DisplayField {},
             field: std::cell::RefCell::new(setup()),
+            should_exit: false,
         }
     }
 }
@@ -138,6 +140,14 @@ impl<'a> GameState for BuildShipGameState<'a> {
             for coord in blocks {
                 f.set(coord, Block { value: 1, orientation: Orientation::Up });
             }
+        }
+    }
+
+    fn update(&mut self) -> Option<GameStateTag> {
+        if self.should_exit { 
+            Some(GameStateTag::Menu)
+        } else {
+            None
         }
     }
 }
