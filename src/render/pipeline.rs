@@ -8,6 +8,26 @@ pub struct Pipeline {
     pub camera: CameraFly,
 }
 
+fn create_perspective_projection() -> glm::Mat4 {
+    let fov: f32 = 3.141592 / 2.0;
+    let zfar = 1024.0;
+    let znear = 0.1;
+
+    let f = 1.0 / (fov / 2.0).tan();
+    let ar = 800.0/600.0;
+
+    //let _cam_proj = glm::ext::perspective(fov, ar, znear, zfar);
+    // note: remember that this is column-major, so the lines of code are actually columns
+    let cam_proj = glm::mat4(
+        f / ar,  0.0,              0.0              ,   0.0,
+           0.0,    f,              0.0              ,   0.0,
+           0.0,  0.0,  (zfar+znear)/(zfar-znear)    ,   1.0,
+           0.0,  0.0, -(2.0*zfar*znear)/(zfar-znear),   0.0,
+    );
+
+    cam_proj
+}
+
 impl Pipeline {
     pub fn new(program: glium::Program) -> Self {
         Pipeline {
@@ -31,24 +51,8 @@ impl Pipeline {
             [0.0, 0.0, 0.0, 1.0f32]
         ];
         let cam_view = self.camera.calculate_view();
-
-        let fov: f32 = 3.141592 / 2.0;
-        let zfar = 1024.0;
-        let znear = 0.1;
-
-        let f = 1.0 / (fov / 2.0).tan();
-        let ar = 800.0/600.0;
-
-        let _cam_proj = glm::ext::perspective(fov, ar, znear, zfar);
-        // note: remember that this is column-major, so the lines of code are actually columns
-        let cam_proj2 = glm::mat4(
-            f / ar,  0.0,              0.0              ,   0.0,
-               0.0,    f,              0.0              ,   0.0,
-               0.0,  0.0,  (zfar+znear)/(zfar-znear)    ,   1.0,
-               0.0,  0.0, -(2.0*zfar*znear)/(zfar-znear),   0.0,
-        );
-
-        let cam_vp = cam_proj2.mul_m(&cam_view);
+        let cam_proj = create_perspective_projection();
+        let cam_vp = cam_proj.mul_m(&cam_view);
 
         for i in 0..4 {
             for j in 0..4 {
