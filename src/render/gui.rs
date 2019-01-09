@@ -30,6 +30,7 @@ impl Gui {
 
     pub fn begin(&mut self, ms: MouseState) {
         self.ms = ms;
+        self.drawjets.clear();
     }
 
     pub fn button(&mut self, caption: &str, bounds: (f64,f64,f64,f64)) -> bool {
