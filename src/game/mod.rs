@@ -58,7 +58,6 @@ impl<'a> Game<'a> {
 
     pub fn react_to_mouse_click(&mut self, state: glutin::ElementState, button: glutin::MouseButton) {
         self.current_state.react_to_mouse_click(state, button);
-        println!("ms {} {}", self.mouse_state.x, self.mouse_state.y);
 
         match button {
             glutin::MouseButton::Left => self.mouse_state.left = state == glutin::ElementState::Pressed,
