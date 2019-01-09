@@ -19,11 +19,12 @@ fn create_font_program(display : &glium::Display) -> glium::Program {
             vertex: "
                 #version 330 core
                 uniform vec2 offset;
+                uniform mat4 matrix;
                 in vec2 position;
                 in vec2 source;
                 out vec2 vSource;
                 void main() {
-                    gl_Position = vec4((position + offset) / 320.0, 0.0, 1.0);
+                    gl_Position = matrix * vec4((position + offset), 0.0, 1.0);
                     vSource = source;
                 }
             ",
@@ -72,10 +73,10 @@ impl DisplayFont {
             num += 1;
 
             verts.append(&mut vec![
-                Vertex { position: [xo,     -yo      ], source: [x    /xs,  1.0 - y    /ys] },
-                Vertex { position: [xo + w, -yo      ], source: [(x+w)/xs,  1.0 - y    /ys] },
-                Vertex { position: [xo,     -(yo + h)], source: [x    /xs,  1.0 - (y+h)/ys] },
-                Vertex { position: [xo + w, -(yo + h)], source: [(x+w)/xs,  1.0 - (y+h)/ys] },
+                Vertex { position: [xo,     yo      ], source: [x    /xs,  1.0 - y    /ys] },
+                Vertex { position: [xo + w, yo      ], source: [(x+w)/xs,  1.0 - y    /ys] },
+                Vertex { position: [xo,     (yo + h)], source: [x    /xs,  1.0 - (y+h)/ys] },
+                Vertex { position: [xo + w, (yo + h)], source: [(x+w)/xs,  1.0 - (y+h)/ys] },
             ]);
         }
 
@@ -104,12 +105,16 @@ impl DisplayFont {
         const NO_INDICES: glium::index::NoIndices =
             glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
 
+        let r = 800.0;
+        let b = 600.0;
+        // let f = 1.0;
+        // let n = -1.0;
         let uniforms = uniform! {
             matrix: [
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 1.0, 0.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0f32]
+                [2.0/r,    0.0,  0.0,  0.0],
+                [  0.0, 2.0/-b,  0.0,  0.0],
+                [  0.0,    0.0, -1.0,  0.0],
+                [ -1.0,    1.0,  0.0,  1.0f32]
             ],
             tex: &self.texture,
             offset: offset,
