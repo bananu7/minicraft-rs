@@ -25,7 +25,7 @@ impl<'a> GameState for MenuState<'a> {
             let mut target = self.display.draw();
             target.clear_color_and_depth((0.0, 0.1, 0.4, 1.0), 1.0);
 
-            self.gui.draw()?;
+            self.gui.draw(&mut target)?;
             target.finish().unwrap();
         }
         Ok(())
@@ -34,10 +34,10 @@ impl<'a> GameState for MenuState<'a> {
     fn update(&mut self, ms: MouseState) -> Option<GameStateTag> {
         self.gui.begin(ms);
 
-        if self.gui.button("Build ship!") {
+        if self.gui.button("Build ship!", (10.0, 10.0, 40.0, 40.0)) {
             self.change_state = Some(GameStateTag::BuildShip);
         }
 
-        self.change_state.clone()
+        return self.change_state.clone()
     }
 }

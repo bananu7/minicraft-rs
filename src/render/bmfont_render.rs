@@ -123,18 +123,17 @@ impl DisplayFont {
         Ok(())
     }
 
-    pub fn print(self: &Self, target: &mut glium::Frame, s: &str) -> Result<(), glium::DrawError> {
+    pub fn print(self: &Self, target: &mut glium::Frame, s: &str, pos: (f64, f64)) -> Result<(), glium::DrawError> {
         let mut x_offset = 0.0;
 
         for c in s.chars() {
             let n = self.char_to_num.get(&(c as i64));
             let cd = self.fd.data.get(&(c as i64));
 
-
             if let Some(n) = n {
                 let ci = *n as usize * 4;
-
-                self.print_single(target, ci, [x_offset, 0.0])?;
+                let off = [x_offset + pos.0 as f32, pos.1 as f32];
+                self.print_single(target, ci, off)?;
                 x_offset += cd.unwrap().x_advance as f32;
             }
         }
