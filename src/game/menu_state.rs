@@ -1,10 +1,12 @@
 use super::traits::*;
 use glium::glutin;
 use glium::Surface;
+use crate::render::gui::*;
 
 pub struct MenuState<'a> {
     display: &'a glium::backend::glutin::Display,
     change_state: Option<GameStateTag>,
+    gui: Gui,
 }
 
 impl<'a> MenuState<'a> {
@@ -12,6 +14,7 @@ impl<'a> MenuState<'a> {
         MenuState {
             display: display,
             change_state: None,
+            gui: Gui::new(&display),
         }
     }
 }
@@ -22,29 +25,19 @@ impl<'a> GameState for MenuState<'a> {
             let mut target = self.display.draw();
             target.clear_color_and_depth((0.0, 0.1, 0.4, 1.0), 1.0);
 
-            //let pip = self.pipeline.borrow();
-            //font_display.print(&mut target, "Hello, world!")?;
-
+            self.gui.draw()?;
             target.finish().unwrap();
         }
         Ok(())
     }
 
-    //let update_camera_look = |position: glutin::dpi::LogicalPosition| {
-    fn react_to_mouse_move(&mut self, _position: (f64, f64)) {
-    }
+    fn update(&mut self, ms: MouseState) -> Option<GameStateTag> {
+        self.gui.begin(ms);
 
-    fn react_to_keyboard(&mut self, _input: glutin::KeyboardInput) {
-    }
-
-    fn react_to_mouse_click(&mut self, state: glutin::ElementState, _button: glutin::MouseButton) {
-        if state != glutin::ElementState::Pressed {
-            return
+        if self.gui.button("Build ship!") {
+            self.change_state = Some(GameStateTag::BuildShip);
         }
-        self.change_state = Some(GameStateTag::BuildShip);
-    }
 
-    fn update(&mut self) -> Option<GameStateTag> {
         self.change_state.clone()
     }
 }

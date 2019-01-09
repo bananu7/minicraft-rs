@@ -6,6 +6,7 @@ use std::path::Path;
 pub mod camera;
 pub mod render_world;
 pub mod pipeline;
+pub mod gui;
 pub mod shaders;
 mod bmfont;
 mod bmfont_render;
