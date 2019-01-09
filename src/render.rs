@@ -50,7 +50,7 @@ pub fn setup() {
                     // Redraw the triangle when the window is resized.
                     //glutin::WindowEvent::Resized(..) => game_state.draw(),
 
-                    //glutin::WindowEvent::CursorMoved { position, .. } => update_camera_look(position),
+                    glutin::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
                     glutin::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
                     glutin::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
 

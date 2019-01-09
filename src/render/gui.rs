@@ -7,7 +7,7 @@ use std::path::Path;
 pub struct Gui {
     font: DisplayFont,
     ms: MouseState,
-    drawjets: Vec<Box<FnOnce(&mut TargettedGuiDisplay)>>,
+    drawjets: Vec<Box<Fn(&mut TargettedGuiDisplay)>>,
 }
 
 impl Gui {
@@ -22,7 +22,7 @@ impl Gui {
 
     pub fn draw(&self, target: &mut glium::Frame) -> Result<(), glium::DrawError> {
         let mut tgd = TargettedGuiDisplay::new(target, &self.font);
-        for d in self.drawjets {
+        for d in &self.drawjets {
             d(&mut tgd);
         }
         Ok(())
@@ -36,9 +36,15 @@ impl Gui {
         let c = caption.to_string();
         let b = bounds.clone();
         let d = move |gd: &mut TargettedGuiDisplay| {
-            gd.print(c, (b.0, b.1))
+            let cc = &c;
+            let bb = &b;
+            gd.print(cc.clone(), (bb.0, bb.1))
         };
         self.drawjets.push(Box::new(d));
+
+        if !self.ms.left {
+            return false
+        }
 
         if self.ms.x >= bounds.0 &&
            self.ms.x <= bounds.0 + bounds.2 &&

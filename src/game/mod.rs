@@ -43,11 +43,13 @@ impl<'a> Game<'a> {
         self.current_state.draw()
     }
 
-    //let update_camera_look = |position: glutin::dpi::LogicalPosition| {
-    pub fn react_to_mouse_move(&mut self, position: (f64, f64)) {
-        self.current_state.react_to_mouse_move(position);
-        self.mouse_state.x = position.0;
-        self.mouse_state.y = position.1
+    pub fn react_to_mouse_move(&mut self, delta: (f64, f64)) {
+        self.current_state.react_to_mouse_move(delta);
+    }
+
+    pub fn react_to_cursor_move(&mut self, pos: glutin::dpi::LogicalPosition) {
+        self.mouse_state.x = pos.x;
+        self.mouse_state.y = pos.y;
     }
 
     pub fn react_to_keyboard(&mut self, input: glutin::KeyboardInput) {
@@ -56,6 +58,8 @@ impl<'a> Game<'a> {
 
     pub fn react_to_mouse_click(&mut self, state: glutin::ElementState, button: glutin::MouseButton) {
         self.current_state.react_to_mouse_click(state, button);
+        println!("ms {} {}", self.mouse_state.x, self.mouse_state.y);
+
         match button {
             glutin::MouseButton::Left => self.mouse_state.left = state == glutin::ElementState::Pressed,
             glutin::MouseButton::Right => self.mouse_state.right = state == glutin::ElementState::Pressed,
