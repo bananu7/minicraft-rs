@@ -121,6 +121,7 @@ impl DisplayFont {
         };
 
         let draw_parameters = glium::DrawParameters {
+            blend: glium::draw_parameters::Blend::alpha_blending(),
             .. Default::default()
         };
 

@@ -143,7 +143,7 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn update(&mut self, ms: MouseState) -> Option<GameStateTag> {
+    fn update(&mut self, _ms: MouseState) -> Option<GameStateTag> {
         if self.should_exit { 
             Some(GameStateTag::Menu)
         } else {

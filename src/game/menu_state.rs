@@ -1,5 +1,4 @@
 use super::traits::*;
-use glium::glutin;
 use glium::Surface;
 use crate::render::gui::*;
 
