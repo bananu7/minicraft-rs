@@ -36,8 +36,7 @@ fn create_font_program(display : &glium::Display) -> glium::Program {
 
                 void main() {
                     f_color = texture(tex, vSource);
-                    //if (f_color.rgb == vec3(0.0,0.0,0.0))
-                    //    discard;
+                    // assume font is RGBA, but only white for now.
                     f_color.a = f_color.r;
                 }
             "
@@ -87,7 +86,7 @@ impl DisplayFont {
             glium::VertexBuffer::new(display, &verts).unwrap()
         };
 
-        let image = image::load(Cursor::new(&include_bytes!("../../data/font - Copy.png")[..]),
+        let image = image::load(Cursor::new(&include_bytes!("../../data/font.png")[..]),
                             image::PNG).unwrap().to_rgba();
         let image_dimensions = image.dimensions();
         let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
