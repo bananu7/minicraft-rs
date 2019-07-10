@@ -55,7 +55,6 @@ pub struct DisplayFont {
 }
 
 impl DisplayFont {
-    // Generate the display rendition for a chunk
     pub fn new(fd: FontDescriptor, display: &glium::Display) -> Self {
         let mut verts = Vec::new();
         let mut char_to_num = HashMap::new();

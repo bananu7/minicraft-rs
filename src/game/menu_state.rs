@@ -1,6 +1,7 @@
 use super::traits::*;
 use glium::Surface;
 use crate::render::gui::*;
+use crate::render::rect::*;
 
 pub struct MenuState<'a> {
     display: &'a glium::backend::glutin::Display,
@@ -33,7 +34,7 @@ impl<'a> GameState for MenuState<'a> {
 
         let mut change_state = None;
 
-        if self.gui.button("Build ship!", (100.0, 100.0, 40.0, 40.0)) {
+        if self.gui.button("Build ship!", Rect::new(100.0, 100.0, 40.0, 40.0))  {
             change_state = Some(GameStateTag::BuildShip);
         }
 

@@ -2,6 +2,7 @@
 use glm::vec3;
 use glm::vec2;
 use crate::render::camera::*;
+use crate::render::util::glm_mat4_to_raw_array;
 
 pub struct Pipeline {
     program: glium::Program,
@@ -44,22 +45,10 @@ impl Pipeline {
     }
 
     pub fn get_vp_matrix(&self) -> [[f32; 4]; 4] {
-        let mut matrix: [[f32; 4]; 4] = [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0f32]
-        ];
         let cam_view = self.camera.calculate_view();
         let cam_proj = create_perspective_projection();
         let cam_vp = cam_proj.mul_m(&cam_view);
 
-        for i in 0..4 {
-            for j in 0..4 {
-                matrix[i][j] = cam_vp[i][j];
-            }
-        }
-
-        return matrix
+        return glm_mat4_to_raw_array(cam_vp);
     }
 }

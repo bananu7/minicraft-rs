@@ -8,6 +8,8 @@ pub mod render_world;
 pub mod pipeline;
 pub mod gui;
 pub mod shaders;
+pub mod util;
+pub mod rect;
 mod bmfont;
 mod bmfont_render;
 
