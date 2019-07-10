@@ -106,12 +106,12 @@ impl<'a> GameState for BuildShipGameState<'a> {
                 let mut cg = self.cursor_grabbed.borrow_mut();
                 *cg = !(*cg);
 
-                match self.display.gl_window().grab_cursor(*cg) {
+                match self.display.gl_window().window().grab_cursor(*cg) {
                     Err(e) => println!("Window grab({}) error: {}", *cg, e),
                     _ => println!("Window grab succeeded")
                 }
 
-                self.display.gl_window().hide_cursor(*cg);
+                self.display.gl_window().window().hide_cursor(*cg);
             }
             /*else {
                 print!("{}\n", key);
