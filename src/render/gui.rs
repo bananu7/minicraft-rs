@@ -49,8 +49,7 @@ impl Gui {
     pub fn label(&mut self, text: &str, position: (f64, f64)) {
         let c = text.to_string();
         let d = move |gd: &mut TargettedGuiDisplay| {
-            let cc = &c;
-            gd.print(cc.clone(), position)
+            gd.print(c.clone(), position)
         };
         self.drawjets.push(Box::new(d));
     }
