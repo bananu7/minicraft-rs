@@ -4,7 +4,6 @@ use crate::render::gui::*;
 
 pub struct MenuState<'a> {
     display: &'a glium::backend::glutin::Display,
-    change_state: Option<GameStateTag>,
     gui: Gui,
 }
 
@@ -12,7 +11,6 @@ impl<'a> MenuState<'a> {
     pub fn new(display: &'a glium::backend::glutin::Display) -> Self {
         MenuState {
             display: display,
-            change_state: None,
             gui: Gui::new(&display),
         }
     }
@@ -33,12 +31,14 @@ impl<'a> GameState for MenuState<'a> {
     fn update(&mut self, ms: MouseState) -> Option<GameStateTag> {
         self.gui.begin(ms);
 
+        let mut change_state = None;
+
         if self.gui.button("Build ship!", (100.0, 100.0, 40.0, 40.0)) {
-            self.change_state = Some(GameStateTag::BuildShip);
+            change_state = Some(GameStateTag::BuildShip);
         }
 
         self.gui.label(&format!("Mouse: ({}, {})", ms.x, ms.y), (100.0, 200.0));
 
-        return self.change_state.clone()
+        return change_state;
     }
 }
