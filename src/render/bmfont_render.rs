@@ -1,10 +1,13 @@
-use crate::render::bmfont::*;
-
+use crate::render::util::glm_mat4_to_raw_array;
+use glm::vec2;
 use glium::{Surface};
 use glium::{uniform, program, implement_vertex};
 
 use std::io::Cursor;
 use std::collections::HashMap;
+
+use crate::render::bmfont::*;
+use crate::render::camera::*;
 
 #[derive(Copy, Clone)]
 struct Vertex {
@@ -106,17 +109,13 @@ impl DisplayFont {
         const NO_INDICES: glium::index::NoIndices =
             glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
 
-        let r = 800.0;
-        let b = 600.0;
-        // let f = 1.0;
-        // let n = -1.0;
+        let screen_width = 800.0;
+        let screen_height  = 600.0;
+
+        let camera = CameraOrtho2D::new(vec2(screen_width, screen_height), vec2(0.0, 0.0));
+
         let uniforms = uniform! {
-            matrix: [
-                [2.0/r,    0.0,  0.0,  0.0],
-                [  0.0, 2.0/-b,  0.0,  0.0],
-                [  0.0,    0.0, -1.0,  0.0],
-                [ -1.0,    1.0,  0.0,  1.0f32]
-            ],
+            matrix: glm_mat4_to_raw_array(camera.calculate_view()),
             tex: &self.texture,
             offset: offset,
         };
