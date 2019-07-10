@@ -34,26 +34,25 @@ impl Gui {
     }
 
     pub fn button(&mut self, caption: &str, bounds: (f64,f64,f64,f64)) -> bool {
-        let c = caption.to_string();
-        let b = bounds.clone();
-        let d = move |gd: &mut TargettedGuiDisplay| {
-            let cc = &c;
-            let bb = &b;
-            gd.print(cc.clone(), (bb.0, bb.1))
-        };
-        self.drawjets.push(Box::new(d));
-
-        if !self.ms.left {
-            return false
-        }
-
-        if self.ms.x >= bounds.0 &&
+        let clicked =
+           self.ms.left &&
+           self.ms.x >= bounds.0 &&
            self.ms.x <= bounds.0 + bounds.2 &&
            self.ms.y >= bounds.1 &&
-           self.ms.y <= bounds.1 + bounds.3 {
-            return true
-        }
-        return false
+           self.ms.y <= bounds.1 + bounds.3;
+
+        self.label(caption, (bounds.0, bounds.1));
+
+        return clicked
+    }
+
+    pub fn label(&mut self, text: &str, position: (f64, f64)) {
+        let c = text.to_string();
+        let d = move |gd: &mut TargettedGuiDisplay| {
+            let cc = &c;
+            gd.print(cc.clone(), position)
+        };
+        self.drawjets.push(Box::new(d));
     }
 }
 

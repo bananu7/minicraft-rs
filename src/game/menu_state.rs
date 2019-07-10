@@ -37,7 +37,7 @@ impl<'a> GameState for MenuState<'a> {
             self.change_state = Some(GameStateTag::BuildShip);
         }
 
-        self.gui.button(&format!("mouse: ({}, {})", ms.x, ms.y), (100.0, 200.0, 0.0, 00.0));
+        self.gui.label(&format!("Mouse: ({}, {})", ms.x, ms.y), (100.0, 200.0));
 
         return self.change_state.clone()
     }
