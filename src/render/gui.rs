@@ -61,12 +61,13 @@ impl Gui {
            self.ms.y >= bounds.y &&
            self.ms.y <= bounds.y + bounds.h;
 
-        self.label(caption, (bounds.x, bounds.y));
-
         let d = move |sself: &Gui, gd: &mut TargettedGuiDisplay| {
-            sself.image_data.draw_sprite(gd.target, "bg", [bounds.x as f32, bounds.y as f32])
+            let b = bounds.clone();
+            sself.image_data.draw_sprite(gd.target, "bg", [b.x as f32, b.y as f32])
         };
         self.drawjets.push(Box::new(d));
+
+        self.label(caption, (bounds.x, bounds.y));
 
         return clicked
     }
