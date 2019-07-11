@@ -1,5 +1,4 @@
 use glm::*;
-use num;
 
 use super::traits::Camera;
 
