@@ -10,6 +10,7 @@ pub mod gui;
 pub mod shaders;
 pub mod util;
 pub mod rect;
+pub mod spritesheet;
 mod bmfont;
 mod bmfont_render;
 

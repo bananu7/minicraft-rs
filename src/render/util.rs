@@ -16,3 +16,5 @@ pub fn glm_mat4_to_raw_array(mat: Mat4) -> [[f32; 4]; 4] {
 
     return matrix;
 }
+
+pub type DrawResult =  Result<(), glium::DrawError>;
