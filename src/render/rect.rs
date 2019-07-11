@@ -1,3 +1,5 @@
+
+#[derive(Debug, Clone, Copy)]
 pub struct Rect {
     pub x: f64,
     pub y: f64,
