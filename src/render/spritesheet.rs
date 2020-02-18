@@ -28,6 +28,7 @@ pub struct SpriteDescriptor {
 
 pub struct SpriteSheet {
     pub data: HashMap<String, SpriteDescriptor>,
+    //pub data: Vec<SpriteDescriptor>,
     pub x_size: i64,
     pub y_size: i64,
 }
@@ -36,6 +37,7 @@ impl SpriteSheet {
     pub fn new() -> Self {
         SpriteSheet {
             data: HashMap::new(),
+           // data: Vec::new(),
             x_size: 256,
             y_size: 256
         }
@@ -107,7 +109,7 @@ impl DisplaySpriteSheet {
         };
 
         let image = image::load(Cursor::new(&include_bytes!("../../data/gui.png")[..]),
-                            image::PNG).unwrap().to_rgba();
+                            image::ImageFormat::Png).unwrap().to_rgba();
         let image_dimensions = image.dimensions();
         let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
         let opengl_texture = glium::texture::CompressedSrgbTexture2d::new(display, image).unwrap();

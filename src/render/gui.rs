@@ -12,7 +12,7 @@ pub struct Gui {
     font: DisplayFont,
     image_data: DisplaySpriteSheet,
     ms: MouseState,
-    drawjets: Vec<Box<Fn(&Gui, &mut TargettedGuiDisplay) -> Result<(), glium::DrawError>>>,
+    drawjets: Vec<Box<dyn Fn(&Gui, &mut TargettedGuiDisplay) -> Result<(), glium::DrawError>>>,
 }
 
 impl Gui {

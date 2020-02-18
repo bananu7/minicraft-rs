@@ -81,8 +81,8 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn react_to_keyboard(&mut self, input: glutin::KeyboardInput) {
-        if input.state == glutin::ElementState::Released {
+    fn react_to_keyboard(&mut self, input: glutin::event::KeyboardInput) {
+        if input.state == glutin::event::ElementState::Released {
             return;
         }
         {
@@ -106,12 +106,12 @@ impl<'a> GameState for BuildShipGameState<'a> {
                 let mut cg = self.cursor_grabbed.borrow_mut();
                 *cg = !(*cg);
 
-                match self.display.gl_window().window().grab_cursor(*cg) {
+                match self.display.gl_window().window().set_cursor_grab(*cg) {
                     Err(e) => println!("Window grab({}) error: {}", *cg, e),
                     _ => println!("Window grab succeeded")
                 }
 
-                self.display.gl_window().window().hide_cursor(*cg);
+                self.display.gl_window().window().set_cursor_visible(*cg);
             }
             /*else {
                 print!("{}\n", key);
@@ -119,8 +119,8 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn react_to_mouse_click(&mut self, state: glutin::ElementState, _button: glutin::MouseButton) {
-        if state != glutin::ElementState::Pressed {
+    fn react_to_mouse_click(&mut self, state: glutin::event::ElementState, _button: glutin::event::MouseButton) {
+        if state != glutin::event::ElementState::Pressed {
             return
         }
 

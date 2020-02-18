@@ -20,9 +20,9 @@ use self::bmfont_render::*;
 use crate::game::Game;
 
 pub fn setup() {
-    let mut events_loop = glutin::EventsLoop::new();
-    let window = glutin::WindowBuilder::new()
-        .with_dimensions(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
+    let mut events_loop = glutin::event_loop::EventLoop::new();
+    let window = glutin::window::WindowBuilder::new()
+        .with_inner_size(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
     let context = glutin::ContextBuilder::new();
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
@@ -47,20 +47,20 @@ pub fn setup() {
         let mut should_break = false;
         events_loop.poll_events(|event| {
             match event {
-                glutin::Event::WindowEvent { event, .. } => match event {
+                glutin::event::Event::WindowEvent { event, .. } => match event {
                     // Break from the main loop when the window is closed.
-                    glutin::WindowEvent::CloseRequested => should_break = true,
+                    glutin::event::WindowEvent::CloseRequested => should_break = true,
                     // Redraw the triangle when the window is resized.
                     //glutin::WindowEvent::Resized(..) => game_state.draw(),
 
-                    glutin::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
-                    glutin::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
-                    glutin::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
+                    glutin::event::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
+                    glutin::event::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
+                    glutin::event::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
 
                     _ => (),
                 },
-                glutin::Event::DeviceEvent { event, .. } => match event {
-                    glutin::DeviceEvent::MouseMotion { delta } => {
+                glutin::event::Event::DeviceEvent { event, .. } => match event {
+                    glutin::event::DeviceEvent::MouseMotion { delta } => {
                         game_state.react_to_mouse_move(delta)
                     },
                     _ => (),

@@ -47,23 +47,23 @@ impl<'a> Game<'a> {
         self.current_state.react_to_mouse_move(delta);
     }
 
-    pub fn react_to_cursor_move(&mut self, pos: glutin::dpi::LogicalPosition) {
+    pub fn react_to_cursor_move(&mut self, pos: glutin::dpi::PhysicalPosition<f64>) {
         self.mouse_state.x = pos.x;
         self.mouse_state.y = pos.y;
     }
 
-    pub fn react_to_keyboard(&mut self, input: glutin::KeyboardInput) {
+    pub fn react_to_keyboard(&mut self, input: glutin::event::KeyboardInput) {
         self.current_state.react_to_keyboard(input)
     }
 
-    pub fn react_to_mouse_click(&mut self, state: glutin::ElementState, button: glutin::MouseButton) {
+    pub fn react_to_mouse_click(&mut self, state: glutin::event::ElementState, button: glutin::event::MouseButton) {
         self.current_state.react_to_mouse_click(state, button);
 
         match button {
-            glutin::MouseButton::Left => self.mouse_state.left = state == glutin::ElementState::Pressed,
-            glutin::MouseButton::Right => self.mouse_state.right = state == glutin::ElementState::Pressed,
-            glutin::MouseButton::Middle => self.mouse_state.middle = state == glutin::ElementState::Pressed,
-            glutin::MouseButton::Other(_) => (),
+            glutin::event::MouseButton::Left => self.mouse_state.left = state == glutin::event::ElementState::Pressed,
+            glutin::event::MouseButton::Right => self.mouse_state.right = state == glutin::event::ElementState::Pressed,
+            glutin::event::MouseButton::Middle => self.mouse_state.middle = state == glutin::event::ElementState::Pressed,
+            glutin::event::MouseButton::Other(_) => (),
         }
     }
 
