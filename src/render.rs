@@ -20,10 +20,11 @@ use self::bmfont_render::*;
 use crate::game::Game;
 
 pub fn setup() {
-    let events_loop = glutin::event_loop::EventLoop::new();
+    let mut events_loop = glutin::event_loop::EventLoop::new();
     let window = glutin::window::WindowBuilder::new()
         .with_inner_size(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
-    let context = glutin::ContextBuilder::new();
+    let context = glutin::ContextBuilder::new()
+        .with_vsync(true);
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
@@ -34,10 +35,19 @@ pub fn setup() {
     }*/
     let _font_display = DisplayFont::new(font_descriptor.unwrap(), &display);
 
+    // TODO: make this actual game state with a field saying whether
+    // the cursor must be grabbed or not
+    // the main loop
+    let mut accumulator = Duration::new(0, 0);
     let mut previous_clock = Instant::now();
+
     let mut game_state = Game::new(&display);
 
     events_loop.run(move |event, _, control_flow| {
+        let next_frame_time = std::time::Instant::now() +
+            std::time::Duration::from_nanos(16_666_667);
+        *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
+
         match event {
             glutin::event::Event::WindowEvent { event, .. } => match event {
                 glutin::event::WindowEvent::CloseRequested => {
@@ -58,14 +68,7 @@ pub fn setup() {
             },
             glutin::event::Event::NewEvents(cause) => match cause {
                 glutin::event::StartCause::ResumeTimeReached { .. } => {
-                    game_state.update(&display);
                     display.gl_window().window().request_redraw();
-
-                    let next_frame_time = std::time::Instant::now() +
-                        std::time::Duration::from_nanos(16_666_667);
-                    *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
-
-                    return;
                 },
                 glutin::event::StartCause::Init => (),
                 _ => return,
@@ -83,5 +86,7 @@ pub fn setup() {
             }
             _ => return,
         }
+        game_state.update(&display);
+        display.gl_window().window().request_redraw();
     });
 }
