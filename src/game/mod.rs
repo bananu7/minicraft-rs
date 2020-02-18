@@ -15,7 +15,6 @@ transitions between them.
 */
 pub struct Game {
     current_state: Box<dyn GameState>,
-    display: glium::Display,
 
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
@@ -29,18 +28,16 @@ fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Box<dyn 
 }
 
 impl Game {
-    pub fn new(display: glium::Display) -> Self {
+    pub fn new(display: &glium::Display) -> Self {
         Game {
             current_state: Box::new(MenuState::new(&display)),
-            display: display,
-
             mouse_state: MouseState::new(),
             keyboard_state: KeyboardState::new(),
         }
     }
 
-    pub fn draw (&self) -> Result<(), glium::DrawError> {
-        self.current_state.draw(&self.display)
+    pub fn draw (&self, display: &glium::Display) -> Result<(), glium::DrawError> {
+        self.current_state.draw(&display)
     }
 
     pub fn react_to_mouse_move(&mut self, delta: (f64, f64)) {
@@ -67,12 +64,12 @@ impl Game {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, display: &glium::Display) {
         let change_state = self.current_state.update(self.mouse_state.clone());
 
         match change_state {
             Some (next_state) => {
-                self.current_state = construct_next_state(next_state, &self.display);
+                self.current_state = construct_next_state(next_state, &display);
             }
             None => (),
         }   
