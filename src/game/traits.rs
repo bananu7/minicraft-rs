@@ -34,7 +34,7 @@ pub trait GameState {
     fn react_to_mouse_click(&mut self, _state: glutin::event::ElementState, _button: glutin::event::MouseButton) {}
     fn react_to_keyboard(&mut self, _input: glutin::event::KeyboardInput) {}
 
-    fn draw(&self) -> Result<(), glium::DrawError>;
+    fn draw(&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError>;
     fn update(&mut self, ms: MouseState) -> Option<GameStateTag>;
 }
 

@@ -3,24 +3,22 @@ use glium::Surface;
 use crate::render::gui::*;
 use crate::render::rect::*;
 
-pub struct MenuState<'a> {
-    display: &'a glium::backend::glutin::Display,
+pub struct MenuState {
     gui: Gui,
 }
 
-impl<'a> MenuState<'a> {
-    pub fn new(display: &'a glium::backend::glutin::Display) -> Self {
+impl MenuState {
+    pub fn new(display: &glium::backend::glutin::Display) -> Self {
         MenuState {
-            display: display,
             gui: Gui::new(&display),
         }
     }
 }
 
-impl<'a> GameState for MenuState<'a> {
-    fn draw (&self) -> Result<(), glium::DrawError> {
+impl GameState for MenuState {
+    fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         {
-            let mut target = self.display.draw();
+            let mut target = display.draw();
             target.clear_color_and_depth((0.0, 0.1, 0.4, 1.0), 1.0);
 
             self.gui.draw(&mut target)?;

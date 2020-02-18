@@ -13,25 +13,25 @@ use glium::glutin;
 Game is an uber-state encompassing all the states and the
 transitions between them.
 */
-pub struct Game<'a> {
-    current_state: Box<dyn GameState + 'a>,
-    display: &'a glium::Display,
+pub struct Game {
+    current_state: Box<dyn GameState>,
+    display: glium::Display,
 
     mouse_state: MouseState,
     keyboard_state: KeyboardState,
 }
 
-fn construct_next_state<'a>(tag: GameStateTag, display: &'a glium::Display) -> Box<dyn GameState + 'a> {
+fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Box<dyn GameState> {
     match tag {
-        GameStateTag::BuildShip => Box::new(BuildShipGameState::new(display)),
-        GameStateTag::Menu => Box::new(MenuState::new(display)),
+        GameStateTag::BuildShip => Box::new(BuildShipGameState::new(&display)),
+        GameStateTag::Menu => Box::new(MenuState::new(&display)),
     }
 }
 
-impl<'a> Game<'a> {
-    pub fn new(display: &'a glium::Display) -> Self {
+impl Game {
+    pub fn new(display: glium::Display) -> Self {
         Game {
-            current_state: Box::new(MenuState::new(display)),
+            current_state: Box::new(MenuState::new(&display)),
             display: display,
 
             mouse_state: MouseState::new(),
@@ -40,7 +40,7 @@ impl<'a> Game<'a> {
     }
 
     pub fn draw (&self) -> Result<(), glium::DrawError> {
-        self.current_state.draw()
+        self.current_state.draw(&self.display)
     }
 
     pub fn react_to_mouse_move(&mut self, delta: (f64, f64)) {
@@ -72,7 +72,7 @@ impl<'a> Game<'a> {
 
         match change_state {
             Some (next_state) => {
-                self.current_state = construct_next_state(next_state, self.display);
+                self.current_state = construct_next_state(next_state, &self.display);
             }
             None => (),
         }   

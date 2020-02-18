@@ -40,56 +40,50 @@ pub fn setup() {
     let mut accumulator = Duration::new(0, 0);
     let mut previous_clock = Instant::now();
 
-    let mut game_state = Game::new(&display);
+    let mut game_state = Game::new(display);
 
-    loop {
-        // events
-        let mut should_break = false;
-        events_loop.poll_events(|event| {
-            match event {
-                glutin::event::Event::WindowEvent { event, .. } => match event {
-                    // Break from the main loop when the window is closed.
-                    glutin::event::WindowEvent::CloseRequested => should_break = true,
-                    // Redraw the triangle when the window is resized.
-                    //glutin::WindowEvent::Resized(..) => game_state.draw(),
+    events_loop.run(move |event, _, control_flow| {
+        let next_frame_time = std::time::Instant::now() +
+            std::time::Duration::from_nanos(16_666_667);
+        *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
 
-                    glutin::event::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
-                    glutin::event::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
-                    glutin::event::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
-
-                    _ => (),
+        match event {
+            glutin::event::Event::WindowEvent { event, .. } => match event {
+                glutin::event::WindowEvent::CloseRequested => {
+                    *control_flow = glutin::event_loop::ControlFlow::Exit;
+                    return;
                 },
-                glutin::event::Event::DeviceEvent { event, .. } => match event {
-                    glutin::event::DeviceEvent::MouseMotion { delta } => {
-                        game_state.react_to_mouse_move(delta)
-                    },
-                    _ => (),
+                // Redraw the triangle when the window is resized.
+                glutin::event::WindowEvent::Resized(..) => {
+                    //display.gl_window().window().request_redraw();
+                    return;
                 }
-                _ => (),
+
+                glutin::event::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
+                glutin::event::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
+                glutin::event::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
+
+                _ => return,
+            },
+            glutin::event::Event::NewEvents(cause) => match cause {
+                glutin::event::StartCause::ResumeTimeReached { .. } => (),
+                glutin::event::StartCause::Init => (),
+                _ => return,
+            },
+            glutin::event::Event::RedrawRequested(_) => {
+                game_state.draw();
+                return;
             }
-        });
-
-        if should_break {
-            break;
+            glutin::event::Event::DeviceEvent { event, .. } => match event {
+                glutin::event::DeviceEvent::MouseMotion { delta } => {
+                    game_state.react_to_mouse_move(delta);
+                    return;
+                },
+                _ => return,
+            }
+            _ => return,
         }
-
-        // time
-        let now = Instant::now();
-        accumulator += now - previous_clock;
-        previous_clock = now;
-
-        // update
-        let fixed_time_stamp = Duration::new(0, 16666667);
-        while accumulator >= fixed_time_stamp {
-            accumulator -= fixed_time_stamp;
-
-            game_state.update();
-        }
-
-        // draw
+        game_state.update();
         game_state.draw();
-
-        // sleep
-        thread::sleep(fixed_time_stamp - accumulator);
-    }
+    });
 }
