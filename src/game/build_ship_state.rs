@@ -57,6 +57,14 @@ impl BuildShipGameState {
 impl GameState for BuildShipGameState {
     fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         {
+            let cg = self.cursor_grabbed.borrow();
+            match display.gl_window().window().set_cursor_grab(*cg) {
+                Err(e) => println!("Window grab({}) error: {}", *cg, e),
+                _ => ()
+            }
+
+            display.gl_window().window().set_cursor_visible(! *cg);
+
             let mut target = display.draw();
             target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
 
@@ -103,13 +111,6 @@ impl GameState for BuildShipGameState {
             else if key == 3 || key == 33 { // F
                 let mut cg = self.cursor_grabbed.borrow_mut();
                 *cg = !(*cg);
-
-                /*match display.gl_window().window().set_cursor_grab(*cg) {
-                    Err(e) => println!("Window grab({}) error: {}", *cg, e),
-                    _ => println!("Window grab succeeded")
-                }
-
-                self.display.gl_window().window().set_cursor_visible(*cg);*/
             }
             /*else {
                 print!("{}\n", key);

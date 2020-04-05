@@ -1,6 +1,5 @@
 use glium::{glutin};
 use std::time::{Duration, Instant};
-use std::thread;
 use std::path::Path;
 
 pub mod camera;
@@ -38,7 +37,7 @@ pub fn setup() {
     // TODO: make this actual game state with a field saying whether
     // the cursor must be grabbed or not
     // the main loop
-    let mut accumulator = Duration::new(0, 0);
+    let mut _accumulator = Duration::new(0, 0);
     let mut previous_clock = Instant::now();
 
     let mut game_state = Game::new(&display);
