@@ -1,23 +1,22 @@
-use crate::world::raycast::{raycast, RaycastParams};
-use crate::world::coord::WorldCoord;
-use glm::*;
-
 #[cfg(test)]
 mod field;
-
-#[allow(dead_code)]
-fn generate_test_coord_vec(points: Vec<[i64;3]>) -> Vec<WorldCoord> {
-    //points.iter().map(|p|{ WorldCoord::new(p[0], p[1], p[2])}).collect()
-    let mut crds = Vec::new();
-    for point in points {
-        crds.push(WorldCoord::new(point[0], point[1], point[2]));
-    }
-    return crds
-}
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::world::raycast::{raycast, RaycastParams};
+    use crate::world::coord::WorldCoord;
+    use glm::*;
+
+    #[allow(dead_code)]
+    fn generate_test_coord_vec(points: Vec<[i64;3]>) -> Vec<WorldCoord> {
+        //points.iter().map(|p|{ WorldCoord::new(p[0], p[1], p[2])}).collect()
+        let mut crds = Vec::new();
+        for point in points {
+            crds.push(WorldCoord::new(point[0], point[1], point[2]));
+        }
+        return crds
+    }
 
     #[test]
     fn test_simple_raycasts() {

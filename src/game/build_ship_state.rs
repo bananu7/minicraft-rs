@@ -10,12 +10,11 @@ use crate::render::pipeline::Pipeline;
 use crate::render::render_world::DisplayField;
 use crate::render::shaders;
 
-pub struct BuildShipGameState<'a> {
+pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,
     cursor_grabbed: RefCell<bool>,
     display_field: DisplayField,
     field: RefCell<Field>,
-    display: &'a glium::Display,
     should_exit: bool,
 }
 
@@ -40,14 +39,13 @@ pub fn create_program(display : &glium::Display) -> glium::Program {
     return program
 }
 
-impl<'a> BuildShipGameState<'a> {
-    pub fn new(display: &'a glium::backend::glutin::Display) -> Self {
+impl BuildShipGameState {
+    pub fn new(display: &glium::backend::glutin::Display) -> Self {
         let program = create_program(&display);
         let pipeline = std::cell::RefCell::new(Pipeline::new(program));
 
         BuildShipGameState {
             pipeline: pipeline,
-            display: display,
             cursor_grabbed: RefCell::new(false),
             display_field: DisplayField {},
             field: std::cell::RefCell::new(setup()),
@@ -56,14 +54,14 @@ impl<'a> BuildShipGameState<'a> {
     }
 }
 
-impl<'a> GameState for BuildShipGameState<'a> {
-    fn draw (&self) -> Result<(), glium::DrawError> {
+impl GameState for BuildShipGameState {
+    fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         {
-            let mut target = self.display.draw();
+            let mut target = display.draw();
             target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
 
             let pip = self.pipeline.borrow();
-            self.display_field.draw(&mut target, &self.display, &self.field.borrow(), &pip);
+            self.display_field.draw(&mut target, &display, &self.field.borrow(), &pip);
             //font_display.print(&mut target, "Hello, world!")?;
 
             target.finish().unwrap();
@@ -81,8 +79,8 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn react_to_keyboard(&mut self, input: glutin::KeyboardInput) {
-        if input.state == glutin::ElementState::Released {
+    fn react_to_keyboard(&mut self, input: glutin::event::KeyboardInput) {
+        if input.state == glutin::event::ElementState::Released {
             return;
         }
         {
@@ -106,12 +104,12 @@ impl<'a> GameState for BuildShipGameState<'a> {
                 let mut cg = self.cursor_grabbed.borrow_mut();
                 *cg = !(*cg);
 
-                match self.display.gl_window().grab_cursor(*cg) {
+                /*match display.gl_window().window().set_cursor_grab(*cg) {
                     Err(e) => println!("Window grab({}) error: {}", *cg, e),
                     _ => println!("Window grab succeeded")
                 }
 
-                self.display.gl_window().hide_cursor(*cg);
+                self.display.gl_window().window().set_cursor_visible(*cg);*/
             }
             /*else {
                 print!("{}\n", key);
@@ -119,8 +117,8 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn react_to_mouse_click(&mut self, state: glutin::ElementState, _button: glutin::MouseButton) {
-        if state != glutin::ElementState::Pressed {
+    fn react_to_mouse_click(&mut self, state: glutin::event::ElementState, _button: glutin::event::MouseButton) {
+        if state != glutin::event::ElementState::Pressed {
             return
         }
 
@@ -143,7 +141,7 @@ impl<'a> GameState for BuildShipGameState<'a> {
         }
     }
 
-    fn update(&mut self) -> Option<GameStateTag> {
+    fn update(&mut self, _ms: MouseState) -> Option<GameStateTag> {
         if self.should_exit { 
             Some(GameStateTag::Menu)
         } else {

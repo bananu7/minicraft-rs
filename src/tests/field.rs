@@ -1,8 +1,6 @@
 use crate::world::from_world_to_local;
-use crate::world::coord::{InnerChunkCoord, OuterChunkCoord};
+use crate::world::coord::{InnerChunkCoord, OuterChunkCoord, WorldCoord};
 use crate::world::SIZE;
-
-use super::*;
 
 // Those helpers are just to shorten the code somewhat
 // Not that Rust could use unnamed uniform initialization

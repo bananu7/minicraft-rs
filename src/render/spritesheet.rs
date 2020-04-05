@@ -1,3 +1,5 @@
+use crate::render::util::DrawResult;
+
 use crate::render::util::glm_mat4_to_raw_array;
 use glm::vec2;
 use glium::{Surface};
@@ -6,7 +8,6 @@ use glium::{uniform, program, implement_vertex};
 use std::io::Cursor;
 use std::collections::HashMap;
 
-use crate::render::bmfont::*;
 use crate::render::camera::*;
 
 #[derive(Copy, Clone)]
@@ -16,7 +17,42 @@ struct Vertex {
 }
 implement_vertex!(Vertex, position, source);
 
-fn create_font_program(display : &glium::Display) -> glium::Program {
+pub struct SpriteDescriptor {
+    pub id: i64,
+
+    pub x: i64, pub y: i64,
+    pub width: i64, pub height: i64,
+
+    pub x_offset: i64, pub y_offset: i64,
+}
+
+pub struct SpriteSheet {
+    pub data: HashMap<String, SpriteDescriptor>,
+    //pub data: Vec<SpriteDescriptor>,
+    pub x_size: i64,
+    pub y_size: i64,
+}
+
+impl SpriteSheet {
+    pub fn new() -> Self {
+        SpriteSheet {
+            data: HashMap::new(),
+           // data: Vec::new(),
+            x_size: 256,
+            y_size: 256
+        }
+    }
+}
+
+pub struct DisplaySpriteSheet {
+    sheet: SpriteSheet,
+
+    vbo: glium::VertexBuffer<Vertex>,
+    program: glium::Program,
+    texture: glium::texture::CompressedSrgbTexture2d,
+}
+
+fn create_sprite_program(display : &glium::Display) -> glium::Program {
     let program = program!(display,
         330 => {
             vertex: "
@@ -39,8 +75,6 @@ fn create_font_program(display : &glium::Display) -> glium::Program {
 
                 void main() {
                     f_color = texture(tex, vSource);
-                    // assume font is RGBA, but only white for now.
-                    f_color.a = f_color.r;
                 }
             "
         },
@@ -48,33 +82,19 @@ fn create_font_program(display : &glium::Display) -> glium::Program {
     return program
 }
 
-pub struct DisplayFont {
-    fd: FontDescriptor,
-    char_to_num: HashMap<i64, i64>,
-
-    vbo: glium::VertexBuffer<Vertex>,
-    program: glium::Program,
-    texture: glium::texture::CompressedSrgbTexture2d,
-}
-
-impl DisplayFont {
-    pub fn new(fd: FontDescriptor, display: &glium::Display) -> Self {
+impl DisplaySpriteSheet {
+    pub fn new(sheet: SpriteSheet, display: &glium::Display) -> Self {
         let mut verts = Vec::new();
-        let mut char_to_num = HashMap::new();
-        let mut num = 0;
 
-        for (i,c) in &fd.data {
+        for (i,c) in &sheet.data {
             let w = c.width as f32;
             let h = c.height as f32;
-            let xs = fd.x_size as f32;
-            let ys = fd.y_size as f32;
+            let xs = sheet.x_size as f32;
+            let ys = sheet.y_size as f32;
             let x = c.x as f32;
             let y = c.y as f32;
             let xo = c.x_offset as f32;
             let yo = c.y_offset as f32;
-
-            char_to_num.insert(*i, num);
-            num += 1;
 
             verts.append(&mut vec![
                 Vertex { position: [xo,     yo      ], source: [x    /xs,  1.0 - y    /ys] },
@@ -88,24 +108,25 @@ impl DisplayFont {
             glium::VertexBuffer::new(display, &verts).unwrap()
         };
 
-        let image = image::load(Cursor::new(&include_bytes!("../../data/font.png")[..]),
+        let image = image::load(Cursor::new(&include_bytes!("../../data/gui.png")[..]),
                             image::ImageFormat::Png).unwrap().to_rgba();
         let image_dimensions = image.dimensions();
         let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
         let opengl_texture = glium::texture::CompressedSrgbTexture2d::new(display, image).unwrap();
 
-        DisplayFont {
-            fd: fd,
-            char_to_num: char_to_num,
+        DisplaySpriteSheet {
+            sheet: sheet,
+
             vbo: vertex_buffer,
-            program: create_font_program(&display),
+            program: create_sprite_program(&display),
             texture: opengl_texture,
         }
     }
 
-    fn print_single(self: &Self, target: &mut glium::Frame, char_idx: usize, offset: [f32; 2])
-        -> Result<(), glium::DrawError>
-    {
+    pub fn draw_sprite(
+        self: &Self, target: &mut glium::Frame,
+        name: &str, offset: [f32; 2]
+    ) -> DrawResult {
         const NO_INDICES: glium::index::NoIndices =
             glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
 
@@ -125,25 +146,18 @@ impl DisplayFont {
             .. Default::default()
         };
 
-        target.draw(self.vbo.slice(char_idx..(char_idx+4)).unwrap(), &NO_INDICES, &self.program, &uniforms, &draw_parameters)?;
-        Ok(())
-    }
-
-    pub fn print(self: &Self, target: &mut glium::Frame, s: &str, pos: (f64, f64)) -> Result<(), glium::DrawError> {
-        let mut x_offset = 0.0;
-
-        for c in s.chars() {
-            let n = self.char_to_num.get(&(c as i64));
-            let cd = self.fd.data.get(&(c as i64));
-
-            if let Some(n) = n {
-                let ci = *n as usize * 4;
-                let off = [x_offset + pos.0 as f32, pos.1 as f32];
-                self.print_single(target, ci, off)?;
-                x_offset += cd.unwrap().x_advance as f32;
-            }
+        match self.sheet.data.get(name) {
+            Some(sprite) => {
+                let sprite_index = sprite.id as usize;
+                target.draw(
+                    self.vbo.slice(sprite_index..(sprite_index+4)).unwrap(),
+                    &NO_INDICES,
+                    &self.program,
+                    &uniforms,
+                    &draw_parameters
+                )
+            },
+            None => Err(glium::DrawError::WrongQueryOperation)
         }
-
-        Ok(())
     }
 }
