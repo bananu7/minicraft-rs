@@ -66,7 +66,7 @@ impl GameState for BuildShipGameState {
             display.gl_window().window().set_cursor_visible(! *cg);
 
             let mut target = display.draw();
-            target.clear_color_and_depth((0.0, 0.0, 0.0, 1.0), 1.0);
+            target.clear_color_and_depth((0.247, 0.843, 0.988, 1.0), 1.0);
 
             let pip = self.pipeline.borrow();
             self.display_field.draw(&mut target, &display, &self.field.borrow(), &pip);

@@ -57,9 +57,14 @@ impl Chunk {
     }
 
     pub fn fill(&mut self) {
-        for i in 0..SIZE*SIZE*SIZE {
-            if i % 13 == 0 {
-                self.data[i as usize] = Block { value: 1, orientation: Orientation::Up };
+        for x in 0..SIZE {
+            for z in 0..SIZE {
+                let e = ((x as f32 * z as f32).sin() + 1.0) * 3.0 + 1.0;
+                let h = e as i64;
+
+                for y in 0..h {
+                    *self.get_mut(&InnerChunkCoord::new(x,y,z)) = Block { value: 1, orientation: Orientation::Up };
+                }
             }
         }
     }

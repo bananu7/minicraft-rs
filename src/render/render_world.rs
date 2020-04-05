@@ -27,42 +27,45 @@ fn add_coord(position: [f32; 3], coord: &WorldCoord) -> [f32; 3] {
 }
 
 fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
+    let green = [0.259, 0.6, 0.012];
+    let brown = [0.388, 0.306, 0.161];
+
     let vertex_list = [
         // Front
-        Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.0], normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
 
         // Back
-        Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.0, 0.0], normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
 
         // Top
-        Vertex { position: [0.0, 1.0, 0.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: [0.0, 0.0, 0.8], normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0] },
 
         // Bottom
-        Vertex { position: [0.0, 0.0, 0.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [0.0, 0.0, 1.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 1.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: [0.0, 0.8, 0.8], normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0] },
 
         // Right
-        Vertex { position: [1.0, 0.0, 1.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: [0.8, 0.8, 0.0], normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0] },
 
         // Left
-        Vertex { position: [0.0, 0.0, 1.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 0.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 0.0, 0.0], color: [0.8, 0.0, 0.8], normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0] },
     ];
 
     let translated_list = vertex_list.into_iter().map(|v| {
