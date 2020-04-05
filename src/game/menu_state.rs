@@ -2,15 +2,20 @@ use super::traits::*;
 use glium::Surface;
 use crate::render::gui::*;
 use crate::render::rect::*;
+use std::time::{Duration, Instant};
 
 pub struct MenuState {
     gui: Gui,
+    time: Instant,
+    last_delta: Duration,
 }
 
 impl MenuState {
     pub fn new(display: &glium::backend::glutin::Display) -> Self {
         MenuState {
             gui: Gui::new(&display),
+            time: Instant::now(),
+            last_delta: Duration::new(0, 0)
         }
     }
 }
@@ -27,8 +32,14 @@ impl GameState for MenuState {
         Ok(())
     }
 
-    fn update(&mut self, ms: MouseState) -> Option<GameStateTag> {
+    fn update(&mut self, ms: MouseState, display: &glium::backend::glutin::Display) -> Option<GameStateTag> {
+        let current_time = Instant::now();
+        self.last_delta = current_time - self.time;
+        self.time = current_time;
+
         self.gui.begin(ms);
+
+        self.gui.label(&format!("Delta: {}", self.last_delta.as_micros()), (100.0, 300.0));
 
         let mut change_state = None;
 

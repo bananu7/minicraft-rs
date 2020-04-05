@@ -65,7 +65,7 @@ impl Game {
     }
 
     pub fn update(&mut self, display: &glium::Display) {
-        let change_state = self.current_state.update(self.mouse_state.clone());
+        let change_state = self.current_state.update(self.mouse_state.clone(), &display);
 
         match change_state {
             Some (next_state) => {

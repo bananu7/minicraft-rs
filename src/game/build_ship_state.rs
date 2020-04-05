@@ -1,5 +1,6 @@
 use super::traits::*;
 
+use std::time::{Instant};
 use core::cell::RefCell;
 use glium::glutin;
 use glium::Surface;
@@ -16,6 +17,7 @@ pub struct BuildShipGameState {
     display_field: DisplayField,
     field: RefCell<Field>,
     should_exit: bool,
+    display_dirty: bool,
 }
 
 pub fn create_program(display : &glium::Display) -> glium::Program {
@@ -47,15 +49,17 @@ impl BuildShipGameState {
         BuildShipGameState {
             pipeline: pipeline,
             cursor_grabbed: RefCell::new(false),
-            display_field: DisplayField {},
+            display_field: DisplayField::new(),
             field: std::cell::RefCell::new(setup()),
             should_exit: false,
+            display_dirty: true,
         }
     }
 }
 
 impl GameState for BuildShipGameState {
     fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
+        let start_time = Instant::now();
         {
             let cg = self.cursor_grabbed.borrow();
             match display.gl_window().window().set_cursor_grab(*cg) {
@@ -69,11 +73,14 @@ impl GameState for BuildShipGameState {
             target.clear_color_and_depth((0.247, 0.843, 0.988, 1.0), 1.0);
 
             let pip = self.pipeline.borrow();
-            self.display_field.draw(&mut target, &display, &self.field.borrow(), &pip);
+            self.display_field.draw(&mut target, &display, &pip);
             //font_display.print(&mut target, "Hello, world!")?;
 
             target.finish().unwrap();
         }
+        let delta = Instant::now() - start_time;
+        println!("Render time: {}", delta.as_micros());
+
         Ok(())
     }
 
@@ -142,7 +149,12 @@ impl GameState for BuildShipGameState {
         }
     }
 
-    fn update(&mut self, _ms: MouseState) -> Option<GameStateTag> {
+    fn update(&mut self, _ms: MouseState, display: &glium::backend::glutin::Display) -> Option<GameStateTag> {
+        if self.display_dirty {
+            self.display_field.update(&self.field.borrow(), &display);
+            self.display_dirty = false;
+        }
+
         if self.should_exit { 
             Some(GameStateTag::Menu)
         } else {

@@ -143,19 +143,27 @@ impl DisplayChunk {
 }
 
 pub struct DisplayField {
-    
+    display_chunks: Vec<DisplayChunk>,
 }
 
 impl DisplayField {
-    pub fn draw(self: &Self, target: &mut glium::Frame, display: &glium::Display, field: &Field, pip: &Pipeline) {
+    pub fn new() -> Self {
+        DisplayField {
+            display_chunks: Vec::new()
+        }
+    }
+
+    pub fn update(self: &mut Self, field: &Field, display: &glium::Display) {
         let chunks = field.get_chunks();
-        let mut display_chunks = Vec::new();
+        self.display_chunks.clear();
 
         for (coord, chunk) in chunks.get_map() {
-            display_chunks.push(DisplayChunk::new((*coord).clone(), chunk, display));
+            self.display_chunks.push(DisplayChunk::new((*coord).clone(), chunk, display));
         }
+    }
 
-        for dc in &display_chunks {        
+    pub fn draw(self: &Self, target: &mut glium::Frame, display: &glium::Display, pip: &Pipeline) {
+        for dc in &self.display_chunks {        
             dc.draw(target, pip);
         }
     }
