@@ -3,6 +3,8 @@ use std::ops;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use crate::world::orientation::Orientation;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Coord<CoordSystemTag> {
     pub x: i64,
@@ -19,6 +21,17 @@ impl<CoordSystemTag> Coord<CoordSystemTag> {
             y,
             z,
             _tag: PhantomData,
+        }
+    }
+
+    pub fn neighbour(self: &Self, o: Orientation) -> Coord<CoordSystemTag> {
+        match o {
+            Orientation::XMinus => Coord::new(self.x - 1, self.y, self.z),
+            Orientation::YMinus => Coord::new(self.x, self.y - 1, self.z),
+            Orientation::ZMinus => Coord::new(self.x, self.y, self.z - 1),
+            Orientation::XPlus => Coord::new(self.x + 1, self.y, self.z),
+            Orientation::YPlus => Coord::new(self.x, self.y + 1, self.z),
+            Orientation::ZPlus => Coord::new(self.x, self.y, self.z + 1)
         }
     }
 }

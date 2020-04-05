@@ -1,7 +1,9 @@
 pub mod default_hash_map;
 pub mod coord;
 pub mod raycast;
+pub mod orientation;
 
+use self::orientation::Orientation;
 use self::coord::WorldCoord;
 use self::coord::OuterChunkCoord;
 use self::coord::InnerChunkCoord;
@@ -33,12 +35,6 @@ pub fn combine_coord(i: InnerChunkCoord, o: OuterChunkCoord) -> WorldCoord {
     return WorldCoord::new(i.x + o.x * SIZE, i.y + o.y * SIZE, i.z + o.z * SIZE)
 }
 
-#[allow(dead_code)]
-#[derive(Hash, Eq, PartialEq, Clone)]
-pub enum Orientation {
-    Up, Down, Left, Right, Front, Back
-}
-
 #[derive(Hash, Eq, PartialEq, Clone)]
 pub struct Block {
     pub value: u64,
@@ -52,7 +48,7 @@ pub struct Chunk {
 impl Chunk {
     pub fn new() -> Self {
         Chunk {
-            data: vec![Block { value: 0, orientation: Orientation::Up }; (SIZE * SIZE * SIZE) as usize],
+            data: vec![Block { value: 0, orientation: Orientation::YPlus }; (SIZE * SIZE * SIZE) as usize],
         }
     }
 
@@ -63,7 +59,7 @@ impl Chunk {
                 let h = e as i64;
 
                 for y in 0..h {
-                    *self.get_mut(&InnerChunkCoord::new(x,y,z)) = Block { value: 1, orientation: Orientation::Up };
+                    *self.get_mut(&InnerChunkCoord::new(x,y,z)) = Block { value: 1, orientation: Orientation::YPlus };
                 }
             }
         }
@@ -105,8 +101,11 @@ impl Field {
     }
 
     pub fn fill(&mut self) {
-        self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();
-        self.chunks.get_mut(OuterChunkCoord::new(1,0,0)).fill();
+        for x in 0..10 {
+            for z in 0..10 {
+                self.chunks.get_mut(OuterChunkCoord::new(x-5,0,z-5)).fill();
+            }
+        }
     }
 
     pub fn get_chunks(&self) -> &DefaultHashMap<OuterChunkCoord, Chunk> {

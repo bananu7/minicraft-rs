@@ -1,6 +1,7 @@
 use crate::render::pipeline::Pipeline;
 use crate::world::coord::{OuterChunkCoord, InnerChunkCoord, WorldCoord};
 use crate::world::{Field, Chunk, SIZE, combine_coord};
+use crate::world::orientation::Orientation;
 use glium::{Surface};
 use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
@@ -68,7 +69,7 @@ fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
         Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0] },
     ];
 
-    let translated_list = vertex_list.into_iter().map(|v| {
+    let translated_list = vertex_list.iter().map(|v| {
         Vertex { position: add_coord(v.position, &coord), color: v.color, normal: v.normal }
     });
 
@@ -97,7 +98,38 @@ impl DisplayChunk {
                 for z in 0..SIZE {
                     let coord = InnerChunkCoord::new(x,y,z);
                     let block = chunk.get(&coord);
-                    if block.value > 0 {
+
+                    if block.value == 0 {
+                        continue;
+                    }
+
+                    // TODO - make this less bad
+                    // check neighbours
+                    { 
+                        let not_on_edge =
+                               coord.x > 0 
+                            && coord.y > 0
+                            && coord.z > 0
+                            && coord.x < SIZE-1
+                            && coord.y < SIZE-1
+                            && coord.z < SIZE-1;
+
+                        if (not_on_edge) {
+                            let surrounded_on_all_sides =
+                                   chunk.get(&coord.neighbour(Orientation::XMinus)).value != 0
+                                && chunk.get(&coord.neighbour(Orientation::YMinus)).value != 0
+                                && chunk.get(&coord.neighbour(Orientation::ZMinus)).value != 0
+                                && chunk.get(&coord.neighbour(Orientation::XPlus)).value != 0
+                                && chunk.get(&coord.neighbour(Orientation::YPlus)).value != 0
+                                && chunk.get(&coord.neighbour(Orientation::ZPlus)).value != 0;
+
+                            if surrounded_on_all_sides {
+                                continue;
+                            }
+                        }
+                    }
+
+                    {
                         vertices.extend(generate_cube(combine_coord(coord, chunk_coord.clone())));
                         indices.extend(index_list.iter().map(|i|{ i + index_offset * 24}));
                         index_offset += 1;

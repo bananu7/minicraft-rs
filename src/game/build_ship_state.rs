@@ -6,7 +6,8 @@ use glium::glutin;
 use glium::Surface;
 use glium::{program};
 use crate::render::camera::*;
-use crate::world::{Block, Field, raycast, Orientation, setup};
+use crate::world::{Block, Field, raycast, setup};
+use crate::world::orientation::Orientation;
 use crate::render::pipeline::Pipeline;
 use crate::render::render_world::DisplayField;
 use crate::render::shaders;
@@ -79,7 +80,7 @@ impl GameState for BuildShipGameState {
             target.finish().unwrap();
         }
         let delta = Instant::now() - start_time;
-        println!("Render time: {}", delta.as_micros());
+        //println!("Render time: {}", delta.as_micros());
 
         Ok(())
     }
@@ -144,7 +145,7 @@ impl GameState for BuildShipGameState {
 
             let mut f = self.field.borrow_mut();
             for coord in blocks {
-                f.set(coord, Block { value: 1, orientation: Orientation::Up });
+                f.set(coord, Block { value: 1, orientation: Orientation::YPlus });
             }
         }
     }
