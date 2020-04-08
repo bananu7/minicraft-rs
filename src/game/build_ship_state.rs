@@ -1,6 +1,6 @@
 use super::traits::*;
 
-use std::time::{Instant};
+//use std::time::{Instant};
 use core::cell::RefCell;
 use glium::glutin;
 use glium::Surface;
@@ -60,7 +60,7 @@ impl BuildShipGameState {
 
 impl GameState for BuildShipGameState {
     fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
-        let start_time = Instant::now();
+        //let start_time = Instant::now();
         {
             let cg = self.cursor_grabbed.borrow();
             match display.gl_window().window().set_cursor_grab(*cg) {
@@ -79,7 +79,7 @@ impl GameState for BuildShipGameState {
 
             target.finish().unwrap();
         }
-        let delta = Instant::now() - start_time;
+        //let delta = Instant::now() - start_time;
         //println!("Render time: {}", delta.as_micros());
 
         Ok(())

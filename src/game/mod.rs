@@ -17,7 +17,6 @@ pub struct Game {
     current_state: Box<dyn GameState>,
 
     mouse_state: MouseState,
-    keyboard_state: KeyboardState,
 }
 
 fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Box<dyn GameState> {
@@ -32,7 +31,6 @@ impl Game {
         Game {
             current_state: Box::new(MenuState::new(&display)),
             mouse_state: MouseState::new(),
-            keyboard_state: KeyboardState::new(),
         }
     }
 

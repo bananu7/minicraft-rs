@@ -89,6 +89,7 @@ impl Field {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get(&self, c: WorldCoord) -> &Block {
         let (outer_coord, inner_coord) = from_world_to_local(c);
         let chunk = self.chunks.get(&outer_coord);

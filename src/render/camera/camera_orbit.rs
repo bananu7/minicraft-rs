@@ -13,6 +13,7 @@ pub struct CameraOrbit
     pub distance: f32,
 }
 
+#[allow(dead_code)]
 pub fn get_direction_vec(m: &Mat4) -> Vec3 {
     vec3(m.c0.z, m.c1.z, m.c2.z)
 }

@@ -21,14 +21,6 @@ impl MouseState {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
-pub struct KeyboardState {
-}
-
-impl KeyboardState {
-    pub fn new() -> Self { KeyboardState {} }
-}
-
 pub trait GameState {
     fn react_to_mouse_move(&mut self, _position: (f64, f64)) {}
     fn react_to_mouse_click(&mut self, _state: glutin::event::ElementState, _button: glutin::event::MouseButton) {}

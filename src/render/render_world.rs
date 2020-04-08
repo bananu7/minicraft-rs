@@ -114,7 +114,7 @@ impl DisplayChunk {
                             && coord.y < SIZE-1
                             && coord.z < SIZE-1;
 
-                        if (not_on_edge) {
+                        if not_on_edge {
                             let surrounded_on_all_sides =
                                    chunk.get(&coord.neighbour(Orientation::XMinus)).value != 0
                                 && chunk.get(&coord.neighbour(Orientation::YMinus)).value != 0
@@ -194,7 +194,7 @@ impl DisplayField {
         }
     }
 
-    pub fn draw(self: &Self, target: &mut glium::Frame, display: &glium::Display, pip: &Pipeline) {
+    pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
             dc.draw(target, pip);
         }

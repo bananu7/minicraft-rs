@@ -32,7 +32,7 @@ impl GameState for MenuState {
         Ok(())
     }
 
-    fn update(&mut self, ms: MouseState, display: &glium::backend::glutin::Display) -> Option<GameStateTag> {
+    fn update(&mut self, ms: MouseState, _display: &glium::backend::glutin::Display) -> Option<GameStateTag> {
         let current_time = Instant::now();
         self.last_delta = current_time - self.time;
         self.time = current_time;

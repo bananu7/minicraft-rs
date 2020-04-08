@@ -7,6 +7,7 @@ pub struct DefaultHashMap<K, V> {
     map: HashMap<K, V>,
 }
 
+#[allow(dead_code)]
 impl<K, V> DefaultHashMap<K, V>
     where K: Hash + Eq,
           V: Clone,

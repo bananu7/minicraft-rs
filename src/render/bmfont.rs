@@ -78,6 +78,7 @@ impl FontDescriptor {
         })
     }
 
+    #[allow(dead_code)]
     pub fn count(&self) -> usize {
         self.data.len()
     }

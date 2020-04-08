@@ -86,7 +86,7 @@ impl DisplaySpriteSheet {
     pub fn new(sheet: SpriteSheet, display: &glium::Display) -> Self {
         let mut verts = Vec::new();
 
-        for (i,c) in &sheet.data {
+        for (_i,c) in &sheet.data {
             let w = c.width as f32;
             let h = c.height as f32;
             let xs = sheet.x_size as f32;
