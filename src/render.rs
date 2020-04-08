@@ -55,7 +55,13 @@ pub fn setup() {
                 _ => return,
             },
             glutin::event::Event::RedrawRequested(_) => {
-                game_state.draw(&display);
+                match game_state.draw(&display) {
+                    Ok(_) => (),
+                    Err(_) => {
+                        println!("Error during rendering!");
+                        *control_flow = glutin::event_loop::ControlFlow::Exit;
+                    }
+                }
                 return;
             }
             glutin::event::Event::DeviceEvent { event, .. } => match event {
