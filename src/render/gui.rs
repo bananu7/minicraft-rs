@@ -38,7 +38,7 @@ impl Gui {
     }
 
     pub fn draw(&self, target: &mut glium::Frame) -> Result<(), glium::DrawError> {
-        let mut tgd = TargettedGuiDisplay::new(target, &self.font, &self.image_data);
+        let mut tgd = TargettedGuiDisplay::new(target, &self.font);
         for d in &self.drawjets {
             match d(&self, &mut tgd) {
                 Ok(()) => (),
@@ -85,15 +85,13 @@ impl Gui {
 struct TargettedGuiDisplay<'a> {
     font: &'a DisplayFont,
     target: &'a mut glium::Frame,
-    image_data: &'a DisplaySpriteSheet,
 }
 
 impl<'a> TargettedGuiDisplay<'a> {
-    pub fn new(target: &'a mut glium::Frame, font: &'a DisplayFont, image_data: &'a DisplaySpriteSheet) -> Self {
+    pub fn new(target: &'a mut glium::Frame, font: &'a DisplayFont) -> Self {
         TargettedGuiDisplay {
             font: font,
             target: target,
-            image_data: image_data,
         }
     }
     pub fn print(&mut self, text: String, pos: (f64,f64)) -> Result<(), glium::DrawError> {
