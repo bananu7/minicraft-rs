@@ -1,5 +1,3 @@
-
-pub const LIGHT_VERT_SHADER : &str = "
 #version 410 core
 
 uniform mat4 matrix;
@@ -66,4 +64,3 @@ void main() {
     gl_Position = matrix * vec4(position, 1.0);
     vColor = (DiffuseColor + AmbientColor) * color;
 }
-";

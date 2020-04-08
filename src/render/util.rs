@@ -1,6 +1,5 @@
 pub mod rect;
 pub mod pipeline;
-pub mod shaders;
 pub mod spritesheet;
 
 use glm::*;

@@ -1,6 +1,7 @@
 use super::traits::*;
 
 //use std::time::{Instant};
+use std::fs;
 use core::cell::RefCell;
 use glium::glutin;
 use glium::Surface;
@@ -10,7 +11,6 @@ use crate::world::{Block, Field, raycast, setup};
 use crate::world::orientation::Orientation;
 use crate::render::util::pipeline::Pipeline;
 use crate::render::world::DisplayField;
-use crate::render::util::shaders;
 
 pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,
@@ -26,17 +26,13 @@ pub fn create_program(display : &glium::Display) -> glium::Program {
     // NVidia: 450
     // Intel: 430
     // OSX: 410
+    let vertex_source = fs::read_to_string("data/shaders/voxel.vs").unwrap();
+    let fragment_source = fs::read_to_string("data/shaders/voxel.fs").unwrap();
+
     let program = program!(display,
         410 => {
-            vertex: &(shaders::LIGHT_VERT_SHADER),
-            fragment: "
-                #version 410 core
-                in vec3 vColor;
-                out vec4 f_color;
-                void main() {
-                    f_color = vec4(vColor, 1.0);
-                }
-            "
+            vertex: vertex_source.as_str(),
+            fragment: fragment_source.as_str(),
         },
     ).unwrap();
     return program
@@ -46,6 +42,8 @@ impl BuildShipGameState {
     pub fn new(display: &glium::backend::glutin::Display) -> Self {
         let program = create_program(&display);
         let pipeline = std::cell::RefCell::new(Pipeline::new(program));
+
+        pipeline.borrow_mut().camera.position.y = 20.0;
 
         BuildShipGameState {
             pipeline: pipeline,
