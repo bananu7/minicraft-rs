@@ -8,9 +8,9 @@ use glium::{program};
 use crate::render::camera::*;
 use crate::world::{Block, Field, raycast, setup};
 use crate::world::orientation::Orientation;
-use crate::render::pipeline::Pipeline;
-use crate::render::render_world::DisplayField;
-use crate::render::shaders;
+use crate::render::util::pipeline::Pipeline;
+use crate::render::world::DisplayField;
+use crate::render::util::shaders;
 
 pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,

@@ -19,19 +19,19 @@ pub struct Game {
     mouse_state: MouseState,
 }
 
-fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Box<dyn GameState> {
+fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Result<Box<dyn GameState>, ()> {
     match tag {
-        GameStateTag::BuildShip => Box::new(BuildShipGameState::new(&display)),
-        GameStateTag::Menu => Box::new(MenuState::new(&display)),
+        GameStateTag::BuildShip => Ok(Box::new(BuildShipGameState::new(&display))),
+        GameStateTag::Menu => Ok(Box::new(MenuState::new(&display)?)),
     }
 }
 
 impl Game {
-    pub fn new(display: &glium::Display) -> Self {
-        Game {
-            current_state: Box::new(MenuState::new(&display)),
+    pub fn new(display: &glium::Display) -> Result<Self, ()> {
+        Ok(Game {
+            current_state: Box::new(MenuState::new(&display)?),
             mouse_state: MouseState::new(),
-        }
+        })
     }
 
     pub fn draw (&self, display: &glium::Display) -> Result<(), glium::DrawError> {
@@ -65,9 +65,10 @@ impl Game {
     pub fn update(&mut self, display: &glium::Display) {
         let change_state = self.current_state.update(self.mouse_state.clone(), &display);
 
+        // TODO : unwrap
         match change_state {
             Some (next_state) => {
-                self.current_state = construct_next_state(next_state, &display);
+                self.current_state = construct_next_state(next_state, &display).unwrap();
             }
             None => (),
         }   

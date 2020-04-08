@@ -1,7 +1,7 @@
 use super::traits::*;
 use glium::Surface;
 use crate::render::gui::*;
-use crate::render::rect::*;
+use crate::render::util::rect::*;
 use std::time::{Duration, Instant};
 
 pub struct MenuState {
@@ -11,12 +11,12 @@ pub struct MenuState {
 }
 
 impl MenuState {
-    pub fn new(display: &glium::backend::glutin::Display) -> Self {
-        MenuState {
-            gui: Gui::new(&display),
+    pub fn new(display: &glium::backend::glutin::Display) -> Result<Self, ()> {
+        Ok(MenuState {
+            gui: Gui::new(&display)?,
             time: Instant::now(),
             last_delta: Duration::new(0, 0)
-        }
+        })
     }
 }
 

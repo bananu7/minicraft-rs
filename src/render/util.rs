@@ -1,3 +1,8 @@
+pub mod rect;
+pub mod pipeline;
+pub mod shaders;
+pub mod spritesheet;
+
 use glm::*;
 
 pub fn glm_mat4_to_raw_array(mat: Mat4) -> [[f32; 4]; 4] {

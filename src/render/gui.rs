@@ -1,12 +1,13 @@
-use crate::render::spritesheet::SpriteDescriptor;
-use crate::render::spritesheet::SpriteSheet;
-use crate::render::spritesheet::DisplaySpriteSheet;
-use crate::render::bmfont::*;
-use crate::render::bmfont_render::*;
+mod bmfont;
+mod bmfont_render;
+
+use crate::render::util::spritesheet::{SpriteDescriptor, SpriteSheet, DisplaySpriteSheet};
+use crate::render::gui::bmfont::*;
+use crate::render::gui::bmfont_render::*;
 
 use crate::game::traits::MouseState;
 use std::path::Path;
-use crate::render::rect::*;
+use crate::render::util::rect::*;
 
 pub struct Gui {
     font: DisplayFont,
@@ -16,7 +17,7 @@ pub struct Gui {
 }
 
 impl Gui {
-    pub fn new(display: &glium::Display) -> Self {
+    pub fn new(display: &glium::Display) -> Result<Self, ()> {
         let fd = FontDescriptor::load(Path::new("data/font.xml"));
 
         let mut image_spritesheet = SpriteSheet::new();
@@ -29,12 +30,12 @@ impl Gui {
         image_spritesheet.x_size = 256;
         image_spritesheet.y_size = 256;
 
-        Gui {
-            font: DisplayFont::new(fd.unwrap(), &display),
-            image_data: DisplaySpriteSheet::new(image_spritesheet, &display),
+        Ok (Gui {
+            font: DisplayFont::new(fd.unwrap(), &display)?,
+            image_data: DisplaySpriteSheet::new(image_spritesheet, &display)?,
             ms: MouseState::new(),
             drawjets: Vec::new(),
-        }
+        })
     }
 
     pub fn draw(&self, target: &mut glium::Frame) -> Result<(), glium::DrawError> {

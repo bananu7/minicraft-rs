@@ -1,4 +1,4 @@
-use crate::render::pipeline::Pipeline;
+use crate::render::util::pipeline::Pipeline;
 use crate::world::coord::{OuterChunkCoord, InnerChunkCoord, WorldCoord};
 use crate::world::{Field, Chunk, SIZE, combine_coord};
 use crate::world::orientation::Orientation;

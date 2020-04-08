@@ -1,15 +1,9 @@
 use glium::{glutin};
 
 pub mod camera;
-pub mod render_world;
-pub mod pipeline;
 pub mod gui;
-pub mod shaders;
 pub mod util;
-pub mod rect;
-pub mod spritesheet;
-mod bmfont;
-mod bmfont_render;
+pub mod world;
 
 use crate::game::Game;
 
@@ -21,7 +15,7 @@ pub fn setup() {
         .with_vsync(true);
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
     let display = glium::Display::new(window, context, &events_loop).unwrap();
-    let mut game_state = Game::new(&display);
+    let mut game_state = Game::new(&display).unwrap();
 
     events_loop.run(move |event, _, control_flow| {
         let next_frame_time = std::time::Instant::now() +
