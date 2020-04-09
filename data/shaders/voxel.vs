@@ -2,11 +2,15 @@
 
 uniform mat4 matrix;
 
-in vec3 position;
-in vec3 color;
-in vec3 normal;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texCoord;
+layout(location = 3) in vec3 color;
 
-out vec3 vColor;
+out VSOut {
+    vec3 color;
+    vec2 texCoord;
+} outData;
 
 float CalcDirectionalLightFactor(vec3 lightDirection, vec3 normal) {
     float DiffuseFactor = dot(normalize(normal), -lightDirection);
@@ -62,5 +66,6 @@ void main() {
     vec3 DiffuseColor = Light1.Color * Light1.DiffuseIntensity * CalcPointLightFactor(Light1.Position, normal, position) ;
 
     gl_Position = matrix * vec4(position, 1.0);
-    vColor = (DiffuseColor + AmbientColor) * color;
+    outData.color = (DiffuseColor + AmbientColor) * color;
+    outData.texCoord = texCoord;
 }

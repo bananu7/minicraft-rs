@@ -7,12 +7,14 @@ use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
 
 #[derive(Copy, Clone)]
+#[allow(non_snake_case)]
 struct Vertex {
     position: [f32; 3],
     color: [f32; 3],
     normal: [f32; 3],
+    texCoord: [f32; 2],
 }
-implement_vertex!(Vertex, position, color, normal);
+implement_vertex!(Vertex, position, color, normal, texCoord);
 
 struct DisplayChunk {
     vbo: glium::VertexBuffer<Vertex>,
@@ -33,44 +35,44 @@ fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
 
     let vertex_list = [
         // Front
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [0., 0.] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [0., 1.] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [1., 1.] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [1., 0.] },
 
         // Back
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [0., 0.] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [0., 1.] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [1., 1.] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [1., 0.] },
 
         // Top
-        Vertex { position: [0.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0] },
+        Vertex { position: [0.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [0., 0.] },
+        Vertex { position: [0.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [0., 1.] },
+        Vertex { position: [1.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [1., 1.] },
+        Vertex { position: [1.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [1., 0.] },
 
         // Bottom
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [0., 0.] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [0., 1.] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [1., 1.] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [1., 0.] },
 
         // Right
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [0., 0.] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [0., 1.] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [1., 1.] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [1., 0.] },
 
         // Left
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0] },
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [0., 0.] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [0., 1.] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [1., 1.] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [1., 0.] },
     ];
 
     let translated_list = vertex_list.iter().map(|v| {
-        Vertex { position: add_coord(v.position, &coord), color: v.color, normal: v.normal }
+        Vertex { position: add_coord(v.position, &coord), color: v.color, normal: v.normal, texCoord: v.texCoord }
     });
 
     return translated_list.collect()
@@ -144,7 +146,8 @@ impl DisplayChunk {
 
         let index_buffer = glium::IndexBuffer::new(
             display,
-            PrimitiveType::TrianglesList,
+            //PrimitiveType::TrianglesList,
+            PrimitiveType::Patches {vertices_per_patch: 3},
             &indices
         ).unwrap();
 
@@ -167,6 +170,7 @@ impl DisplayChunk {
                 write: true,
                 .. Default::default()
             },
+            polygon_mode: glium::PolygonMode::Line,
             .. Default::default()
         };
 

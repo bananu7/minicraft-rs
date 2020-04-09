@@ -17,6 +17,8 @@ pub fn setup() {
     let display = glium::Display::new(window, context, &events_loop).unwrap();
     let mut game_state = Game::new(&display).unwrap();
 
+    display.gl_window().window().set_title("minicraft-rs");
+
     events_loop.run(move |event, _, control_flow| {
         let next_frame_time = std::time::Instant::now() +
             //std::time::Duration::from_nanos(16_666_667);

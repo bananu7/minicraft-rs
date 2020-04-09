@@ -1,0 +1,39 @@
+#version 410 core
+
+layout (vertices = 3) out;
+
+in VSOut {
+    vec3 color;
+    vec2 texCoord;
+} inData[];
+
+out TCSOut {
+    vec3 color;
+    vec2 texCoord;
+} outData[];
+
+void main()
+{
+    // Set the control points of the output patch
+    //TexCoord_ES_in[gl_InvocationID] = TexCoord_CS_in[gl_InvocationID];
+    //Normal_ES_in[gl_InvocationID] = Normal_CS_in[gl_InvocationID];
+    //WorldPos_ES_in[gl_InvocationID] = WorldPos_CS_in[gl_InvocationID];
+
+    outData[gl_InvocationID].color = inData[gl_InvocationID].color;
+    outData[gl_InvocationID].texCoord = inData[gl_InvocationID].texCoord;
+
+    // Calculate the distance from the camera to the three control points
+    //float EyeToVertexDistance0 = distance(gEyeWorldPos, WorldPos_ES_in[0]);
+    //float EyeToVertexDistance1 = distance(gEyeWorldPos, WorldPos_ES_in[1]);
+    //float EyeToVertexDistance2 = distance(gEyeWorldPos, WorldPos_ES_in[2]);
+
+
+
+    // Calculate the tessellation levels
+    gl_TessLevelOuter[0] = 5.0;
+    gl_TessLevelOuter[1] = 5.0;
+    gl_TessLevelOuter[2] = 5.0;
+    gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+
+    gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+}

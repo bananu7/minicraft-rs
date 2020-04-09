@@ -28,11 +28,15 @@ pub fn create_program(display : &glium::Display) -> glium::Program {
     // OSX: 410
     let vertex_source = fs::read_to_string("data/shaders/voxel.vs").unwrap();
     let fragment_source = fs::read_to_string("data/shaders/voxel.fs").unwrap();
+    let tes_source = fs::read_to_string("data/shaders/voxel.tes").unwrap();
+    let tcs_source = fs::read_to_string("data/shaders/voxel.tcs").unwrap();
 
     let program = program!(display,
         410 => {
             vertex: vertex_source.as_str(),
             fragment: fragment_source.as_str(),
+            tessellation_control: tcs_source.as_str(),
+            tessellation_evaluation: tes_source.as_str(),
         },
     ).unwrap();
     return program
