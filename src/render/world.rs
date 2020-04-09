@@ -6,6 +6,8 @@ use glium::{Surface};
 use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
 
+pub mod hot;
+
 #[derive(Copy, Clone)]
 #[allow(non_snake_case)]
 struct Vertex {

@@ -10,7 +10,7 @@ use crate::render::camera::*;
 use crate::world::{Block, Field, raycast, setup};
 use crate::world::orientation::Orientation;
 use crate::render::util::pipeline::Pipeline;
-use crate::render::world::DisplayField;
+use crate::render::world::hot::DisplayField;
 
 pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,
@@ -52,7 +52,7 @@ impl BuildShipGameState {
         BuildShipGameState {
             pipeline: pipeline,
             cursor_grabbed: RefCell::new(false),
-            display_field: DisplayField::new(),
+            display_field: DisplayField::new(display),
             field: std::cell::RefCell::new(setup()),
             should_exit: false,
             display_dirty: true,
@@ -61,7 +61,7 @@ impl BuildShipGameState {
 }
 
 impl GameState for BuildShipGameState {
-    fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
+    fn draw (&mut self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         //let start_time = Instant::now();
         {
             let cg = self.cursor_grabbed.borrow();
