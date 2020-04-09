@@ -122,7 +122,7 @@ impl DisplayField {
             tessellation_evaluation_shader: None,
             geometry_shader: Some(gs_source.as_str()),
             //geometry_shader: None,
-            fragment_shader: "",
+            fragment_shader: fragment_source.as_str(),
             transform_feedback_varyings: Some((tfb_varyings, glium::program::TransformFeedbackMode::Interleaved)),
             outputs_srgb: false,
             uses_point_size: false,
