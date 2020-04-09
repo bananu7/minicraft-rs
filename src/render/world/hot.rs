@@ -31,8 +31,8 @@ struct DisplayChunkHot {
 impl DisplayChunkHot {
     // Generate the display rendition for a chunk
     pub fn new(chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> Self {
-        let mut vertices = Vec::with_capacity((SIZE*SIZE*SIZE*3) as usize);
-        vertices.resize((SIZE*SIZE*SIZE*3) as usize,  RootVertex { position: [0.,0.,0.], value: 0 });
+        let mut vertices = Vec::with_capacity((SIZE*SIZE*SIZE) as usize);
+        vertices.resize((SIZE*SIZE*SIZE) as usize,  RootVertex { position: [0.,0.,0.], value: 0 });
 
         for x in 0..SIZE {
             for y in 0..SIZE {
@@ -45,7 +45,7 @@ impl DisplayChunkHot {
         }
 
         let input_buffer: glium::VertexBuffer<RootVertex> = glium::VertexBuffer::new(display, &vertices).unwrap();
-        let mut out_buffer: glium::VertexBuffer<Vertex> = glium::VertexBuffer::empty(display, (SIZE*SIZE*SIZE * 4) as usize).unwrap();
+        let mut out_buffer: glium::VertexBuffer<Vertex> = glium::VertexBuffer::empty(display, (SIZE*SIZE*SIZE * 4 * 6) as usize).unwrap();
 
         DisplayChunkHot {
             input_vbo: input_buffer,          
