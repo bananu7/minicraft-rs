@@ -105,12 +105,12 @@ impl DisplayChunkGenHot {
 
             let params = glium::DrawParameters {
                 transform_feedback: Some(&session),
+                draw_primitives: false,
                 .. Default::default()
             };
 
-            let mut target = display.draw();
-            target.draw(&self.input_vbo, NO_INDICES, &self.tfb_program, &uniforms, &params).unwrap();
-            target.finish().unwrap();
+            let mut empty_fbo = glium::framebuffer::EmptyFrameBuffer::new(display, 1, 1, None, None, false).unwrap();
+            empty_fbo.draw(&self.input_vbo, NO_INDICES, &self.tfb_program, &uniforms, &params).unwrap();
         }
 
         DisplayChunk {   
