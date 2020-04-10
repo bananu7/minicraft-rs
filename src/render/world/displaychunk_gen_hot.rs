@@ -101,6 +101,7 @@ impl DisplayChunkGenHot {
                                                                &mut out_buffer).unwrap();
 
             let uniforms = uniform! {
+                chunk_position: [(chunk_coord.x * SIZE) as f32, (chunk_coord.y * SIZE) as f32, (chunk_coord.z * SIZE) as f32],
             };
 
             let params = glium::DrawParameters {
