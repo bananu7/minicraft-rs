@@ -18,6 +18,7 @@ struct RootVertex {
 implement_vertex!(RootVertex, position, value);
 
 pub struct DisplayChunkGenHot {
+    vertices_cache: Vec<RootVertex>,
     input_vbo: glium::VertexBuffer<RootVertex>,
     tfb_program: glium::Program,
 }
@@ -54,10 +55,10 @@ impl DisplayChunkGenHot {
         for x in 0..SIZE {
             for y in 0..SIZE {
                 for z in 0..SIZE {
-                    // placeholder
-                    let v = 1; //chunk.get(&InnerChunkCoord::new(x,y,z)).value;
+                    let v = 0; // placeholder
 
-                    vertices[(x*SIZE*SIZE + y*SIZE + z + 0) as usize] = RootVertex { position: [x as f32, y as f32, z as f32], value: v as i32 };
+                    vertices[(x*SIZE*SIZE + y*SIZE + z + 0) as usize] =
+                        RootVertex { position: [x as f32, y as f32, z as f32], value: v as i32 };
                 }
             }
         }
@@ -65,28 +66,26 @@ impl DisplayChunkGenHot {
         let input_buffer: glium::VertexBuffer<RootVertex> = glium::VertexBuffer::new(display, &vertices).unwrap();
 
         DisplayChunkGenHot {
+            vertices_cache: vertices,
             tfb_program: program,
             input_vbo: input_buffer,
         }
     }
 
     pub fn generate(self: &mut Self, chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> DisplayChunk {
-        // TODO - use buffersubdata or something
         {
-            let mut vertices = Vec::with_capacity((SIZE*SIZE*SIZE) as usize);
-            vertices.resize((SIZE*SIZE*SIZE) as usize,  RootVertex { position: [0.,0.,0.], value: 0 });
-
             for x in 0..SIZE {
                 for y in 0..SIZE {
                     for z in 0..SIZE {
                         let v = chunk.get(&InnerChunkCoord::new(x,y,z)).value;
 
-                        vertices[(x*SIZE*SIZE + y*SIZE + z + 0) as usize] = RootVertex { position: [x as f32, y as f32, z as f32], value: v as i32 };
+                        self.vertices_cache[(x*SIZE*SIZE + y*SIZE + z + 0) as usize] =
+                            RootVertex { position: [x as f32, y as f32, z as f32], value: v as i32 };
                     }
                 }
             }
 
-            self.input_vbo = glium::VertexBuffer::new(display, &vertices).unwrap();
+            self.input_vbo.write(&self.vertices_cache);
         }
 
         let mut out_buffer: glium::VertexBuffer<Vertex> =
