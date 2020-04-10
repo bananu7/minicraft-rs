@@ -102,12 +102,12 @@ impl Field {
     }
 
     pub fn fill(&mut self) {
-        /*for x in 0..10 {
+        for x in 0..10 {
             for z in 0..10 {
                 self.chunks.get_mut(OuterChunkCoord::new(x-5,0,z-5)).fill();
             }
-        }*/
-        self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();
+        }
+        //self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();
     }
 
     pub fn get_chunks(&self) -> &DefaultHashMap<OuterChunkCoord, Chunk> {
