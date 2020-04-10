@@ -20,7 +20,6 @@ implement_vertex!(Vertex, position, color, normal, texCoord);
 
 struct DisplayChunk {
     vbo: glium::VertexBuffer<Vertex>,
-    ibo: glium::IndexBuffer<u32>,
 }
 
 fn add_coord(position: [f32; 3], coord: &WorldCoord) -> [f32; 3] {
@@ -73,29 +72,34 @@ fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
         Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [1., 0.] },
     ];
 
-    let translated_list = vertex_list.iter().map(|v| {
+    let translated_list: Vec<Vertex> = vertex_list.iter().map(|v| {
         Vertex { position: add_coord(v.position, &coord), color: v.color, normal: v.normal, texCoord: v.texCoord }
-    });
+    }).collect();
 
-    return translated_list.collect()
+    let index_list = 
+    [
+          0u32, 1, 2, 0, 2, 3,
+          4, 5, 6, 4, 6, 7,
+          8, 9,10, 8,10,11,
+          12,13,14,12,14,15,
+          16,17,18,16,18,19,
+          20,21,22,20,22,23,
+    ];
+
+    let expanded_size = 6 * 2 * 3; // 6 faces, two triangles each
+    let mut expanded_list = Vec::with_capacity(expanded_size);
+
+    for index in index_list.iter() {
+        expanded_list.push(translated_list[*index as usize]);
+    }
+
+    return expanded_list
 }
 
 impl DisplayChunk {
     // Generate the display rendition for a chunk
     pub fn new(chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> Self {
         let mut vertices = Vec::new();
-        let index_list = 
-        [
-              0u32, 1, 2, 0, 2, 3,
-              4, 5, 6, 4, 6, 7,
-              8, 9,10, 8,10,11,
-              12,13,14,12,14,15,
-              16,17,18,16,18,19,
-              20,21,22,20,22,23,
-        ];
-
-        let mut indices = Vec::new();
-        let mut index_offset = 0;
 
         for x in 0..SIZE {
             for y in 0..SIZE {
@@ -135,8 +139,6 @@ impl DisplayChunk {
 
                     {
                         vertices.extend(generate_cube(combine_coord(coord, chunk_coord.clone())));
-                        indices.extend(index_list.iter().map(|i|{ i + index_offset * 24}));
-                        index_offset += 1;
                     }
                 }
             }
@@ -146,16 +148,8 @@ impl DisplayChunk {
             glium::VertexBuffer::new(display, &vertices).unwrap()
         };
 
-        let index_buffer = glium::IndexBuffer::new(
-            display,
-            //PrimitiveType::TrianglesList,
-            PrimitiveType::Patches {vertices_per_patch: 3},
-            &indices
-        ).unwrap();
-
         DisplayChunk {
             vbo: vertex_buffer,
-            ibo: index_buffer,            
         }
     }
 
@@ -165,6 +159,9 @@ impl DisplayChunk {
         let uniforms = uniform! {
             matrix: matrix,
         };
+
+        const NO_INDICES: glium::index::NoIndices =
+                glium::index::NoIndices(glium::index::PrimitiveType::Patches {vertices_per_patch: 3});
 
         let params = glium::DrawParameters {
             depth: glium::Depth {
@@ -176,7 +173,7 @@ impl DisplayChunk {
             .. Default::default()
         };
 
-        target.draw(&self.vbo, &self.ibo, &pip.get_program(), &uniforms, &params).unwrap();
+        target.draw(&self.vbo, NO_INDICES, &pip.get_program(), &uniforms, &params).unwrap();
     }
 }
 
@@ -185,7 +182,7 @@ pub struct DisplayField {
 }
 
 impl DisplayField {
-    pub fn new() -> Self {
+    pub fn new(_display: &glium::Display) -> Self {
         DisplayField {
             display_chunks: Vec::new()
         }

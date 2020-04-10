@@ -10,7 +10,7 @@ use crate::render::camera::*;
 use crate::world::{Block, Field, raycast, setup};
 use crate::world::orientation::Orientation;
 use crate::render::util::pipeline::Pipeline;
-use crate::render::world::hot::DisplayField;
+use crate::render::world::DisplayField;
 
 pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,
