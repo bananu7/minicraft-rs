@@ -3,7 +3,6 @@ use crate::world::coord::{OuterChunkCoord, InnerChunkCoord, WorldCoord};
 use crate::world::{Field, Chunk, SIZE, combine_coord};
 use crate::world::orientation::Orientation;
 use glium::{Surface};
-use glium::index::PrimitiveType;
 use glium::{uniform, implement_vertex};
 
 pub mod hot;

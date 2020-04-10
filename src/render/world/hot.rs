@@ -45,7 +45,7 @@ impl DisplayChunkHot {
         }
 
         let input_buffer: glium::VertexBuffer<RootVertex> = glium::VertexBuffer::new(display, &vertices).unwrap();
-        let mut out_buffer: glium::VertexBuffer<Vertex> = glium::VertexBuffer::empty(display, (SIZE*SIZE*SIZE * 4 * 6) as usize).unwrap();
+        let out_buffer: glium::VertexBuffer<Vertex> = glium::VertexBuffer::empty(display, (SIZE*SIZE*SIZE * 4 * 6) as usize).unwrap();
 
         DisplayChunkHot {
             input_vbo: input_buffer,          
