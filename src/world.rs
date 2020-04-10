@@ -102,9 +102,9 @@ impl Field {
     }
 
     pub fn fill(&mut self) {
-        for x in 0..10 {
-            for z in 0..10 {
-                self.chunks.get_mut(OuterChunkCoord::new(x-5,0,z-5)).fill();
+        for x in 0..2 {
+            for z in 0..2 {
+                self.chunks.get_mut(OuterChunkCoord::new(x,0,z)).fill();
             }
         }
         //self.chunks.get_mut(OuterChunkCoord::new(0,0,0)).fill();

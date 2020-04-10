@@ -149,6 +149,8 @@ impl GameState for BuildShipGameState {
             for coord in blocks {
                 f.set(coord, Block { value: 1, orientation: Orientation::YPlus });
             }
+
+            self.display_dirty = true;
         }
     }
 
