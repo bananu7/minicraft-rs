@@ -28,19 +28,19 @@ void main() {
 
     out_position = world_pos + vec3(0.0, 1.0, 1.0);
     out_normal = vec3(0.0, 1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 0.0);
     out_normal = vec3(0.0, 1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 1.0);
     out_normal = vec3(0.0, 1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
@@ -55,19 +55,19 @@ void main() {
 
     out_position = world_pos + vec3(0.0, 0.0, 1.0);
     out_normal = vec3(0.0, -1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 0.0, 0.0);
     out_normal = vec3(0.0, -1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 0.0, 1.0);
     out_normal = vec3(0.0, -1.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 0.0, 1.0);
     EmitVertex();
 
@@ -82,19 +82,19 @@ void main() {
 
     out_position = world_pos + vec3(0.0, 1.0, 1.0);
     out_normal = vec3(0.0, 0.0, 1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 0.0, 1.0);
     out_normal = vec3(0.0, 0.0, 1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 1.0);
     out_normal = vec3(0.0, 0.0, 1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
@@ -109,19 +109,19 @@ void main() {
 
     out_position = world_pos + vec3(0.0, 1.0, 0.0);
     out_normal = vec3(0.0, 0.0, -1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 0.0, 0.0);
     out_normal = vec3(0.0, 0.0, -1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 0.0);
     out_normal = vec3(0.0, 0.0, -1.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
@@ -136,19 +136,19 @@ void main() {
 
     out_position = world_pos + vec3(1.0, 0.0, 1.0);
     out_normal = vec3(1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 0.0);
     out_normal = vec3(1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(1.0, 1.0, 1.0);
     out_normal = vec3(1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
@@ -163,19 +163,19 @@ void main() {
 
     out_position = world_pos + vec3(0.0, 0.0, 1.0);
     out_normal = vec3(-1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(0.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(0.0, 1.0, 0.0);
     out_normal = vec3(-1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 0.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
     out_position = world_pos + vec3(0.0, 1.0, 1.0);
     out_normal = vec3(-1.0, 0.0, 0.0);
-    out_texCoord = vec2(0.0, 0.0);
+    out_texCoord = vec2(1.0, 1.0);
     out_color = vec3(1.0, 1.0, 1.0);
     EmitVertex();
 
