@@ -52,7 +52,7 @@ impl BuildShipGameState {
         BuildShipGameState {
             pipeline: pipeline,
             cursor_grabbed: RefCell::new(false),
-            display_field: DisplayField::new(),
+            display_field: DisplayField::new(display),
             field: std::cell::RefCell::new(setup()),
             should_exit: false,
             display_dirty: true,
@@ -61,7 +61,7 @@ impl BuildShipGameState {
 }
 
 impl GameState for BuildShipGameState {
-    fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
+    fn draw (&mut self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         //let start_time = Instant::now();
         {
             let cg = self.cursor_grabbed.borrow();
@@ -149,6 +149,8 @@ impl GameState for BuildShipGameState {
             for coord in blocks {
                 f.set(coord, Block { value: 1, orientation: Orientation::YPlus });
             }
+
+            self.display_dirty = true;
         }
     }
 

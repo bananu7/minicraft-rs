@@ -21,7 +21,7 @@ impl MenuState {
 }
 
 impl GameState for MenuState {
-    fn draw (&self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
+    fn draw (&mut self, display: &glium::backend::glutin::Display) -> Result<(), glium::DrawError> {
         {
             let mut target = display.draw();
             target.clear_color_and_depth((0.0, 0.1, 0.4, 1.0), 1.0);

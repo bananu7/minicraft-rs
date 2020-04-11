@@ -34,7 +34,7 @@ impl Game {
         })
     }
 
-    pub fn draw (&self, display: &glium::Display) -> Result<(), glium::DrawError> {
+    pub fn draw (&mut self, display: &glium::Display) -> Result<(), glium::DrawError> {
         self.current_state.draw(&display)
     }
 
