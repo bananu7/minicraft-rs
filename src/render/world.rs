@@ -17,18 +17,24 @@ pub struct DisplayField {
     gen_hot: displaychunk_gen_hot::DisplayChunkGenHot,
 
     normal_map: glium::texture::Texture2d,
+    color_map: glium::texture::CompressedSrgbTexture2d,
+}
+
+fn load_image(path: &str) -> glium::texture::RawImage2d<u8> {
+    let image = image::open(path)
+        .map(|i| i.to_rgba() )
+        .map_err(|_| () ).unwrap();
+
+    let image_dimensions = image.dimensions();
+    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+    return image;
 }
 
 impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
         // TEXTURE ----------------------------
-        let image = image::open("data/normalMap.png")
-            .map(|i| i.to_rgba() )
-            .map_err(|_| () ).unwrap();
-
-        let image_dimensions = image.dimensions();
-        let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-        let normal_map = glium::texture::Texture2d::new(display, image).unwrap();
+        let normal_map = glium::texture::Texture2d::new(display, load_image("data/normalMap.png")).unwrap();
+        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image("data/color.png")).unwrap();
         // --------------------------------------
 
         DisplayField {
@@ -37,6 +43,7 @@ impl DisplayField {
             gen_hot: displaychunk_gen_hot::DisplayChunkGenHot::new(display),
 
             normal_map: normal_map,
+            color_map: color_map,
         }
     }
 
@@ -60,7 +67,7 @@ impl DisplayField {
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
             // Temp
-            dc.draw(target, pip, &self.normal_map);
+            dc.draw(target, pip, &self.normal_map, &self.color_map);
         }
     }
 }

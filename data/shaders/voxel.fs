@@ -2,7 +2,6 @@
 
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
-uniform sampler2D depthMap;
 
 in TESOut {
     vec3 modelspacePosition;
@@ -54,6 +53,15 @@ void main() {
 
     normal = normalize(normal);
 
+    // ------------------------
+
+    vec3 vcolor = vertex.color;
+    vec3 tcolor = texture(colorMap, vertex.texCoord).xyz;
+
+    vec3 color = tcolor;
+
+    // ------------------------
+
     struct DirectionalLight {
         vec3 Color;
         vec3 AmbientIntensity;
@@ -69,7 +77,7 @@ void main() {
     } Light1;
 
     Light0.Color = vec3(1.0, 1.0, 1.0);
-    Light0.AmbientIntensity = vec3(0.1, 0.1, 0.1);
+    Light0.AmbientIntensity = vec3(0.01, 0.01, 0.01);
     Light0.DiffuseIntensity = vec3(0.8, 0.8, 0.8);
     Light0.Direction = vec3(-10, -100, -100);
 
@@ -87,12 +95,13 @@ void main() {
         * Light1.DiffuseIntensity 
         * CalcPointLightFactor(Light1.Position, normal, vertex.modelspacePosition);
 
-    vec3 color = (DiffuseColor + AmbientColor) * vertex.color;
+    vec3 computedColor = (DiffuseColor + AmbientColor) * color;
 
     //-------------------------------------------------------
 
-    outColor = vec4(color, 1.0);
+    outColor = vec4(computedColor, 1.0);
     //outColor = vec4(1.0, 0.0, 0.0, 1.0);
     //outColor = vec4(vertex.texCoord, 0.0, 1.0);
     //outColor = vec4(normal, 1.0);
+    //outColor = vec4(color, 1.0);
 }
