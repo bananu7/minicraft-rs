@@ -2,24 +2,16 @@
 
 layout (points) in;
 layout (triangle_strip, max_vertices = 24) out;
-// size of one vertex - 44
-// size of one cube - 6*44 =  264
-
-/*layout(xfb_buffer = 0, xfb_stride = 44) out Data {
-    vec3 position;
-    vec3 color;
-    vec3 normal;
-    vec2 texCoord;
-};*/
 
 uniform vec3 chunk_position;
 
 in vec3 vs_position[];
 in int vs_value[];
-/*layout(xfb_buffer = 0)*/ out vec3 out_position;
-/*layout(xfb_buffer = 0)*/ out vec3 out_normal;
-/*layout(xfb_buffer = 0)*/ out vec2 out_texCoord;
-/*layout(xfb_buffer = 0)*/ out vec3 out_color;
+
+out vec3 out_position;
+out vec3 out_normal;
+out vec2 out_texCoord;
+out vec3 out_color;
 
 void main() {
     if (vs_value[0] == 0)
