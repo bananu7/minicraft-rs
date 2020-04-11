@@ -15,14 +15,28 @@ pub struct DisplayField {
     display_chunks: Vec<DisplayChunk>,
     gen_cold: displaychunk_gen_cold::DisplayChunkGenCold,
     gen_hot: displaychunk_gen_hot::DisplayChunkGenHot,
+
+    normal_map: glium::texture::Texture2d,
 }
 
 impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
+        // TEXTURE ----------------------------
+        let image = image::open("data/normalMap.png")
+            .map(|i| i.to_rgba() )
+            .map_err(|_| () ).unwrap();
+
+        let image_dimensions = image.dimensions();
+        let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+        let normal_map = glium::texture::Texture2d::new(display, image).unwrap();
+        // --------------------------------------
+
         DisplayField {
             display_chunks: Vec::new(),
             gen_cold: displaychunk_gen_cold::DisplayChunkGenCold::new(display),
             gen_hot: displaychunk_gen_hot::DisplayChunkGenHot::new(display),
+
+            normal_map: normal_map,
         }
     }
 
@@ -45,7 +59,8 @@ impl DisplayField {
 
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
-            dc.draw(target, pip);
+            // Temp
+            dc.draw(target, pip, &self.normal_map);
         }
     }
 }
