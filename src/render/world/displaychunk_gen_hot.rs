@@ -112,8 +112,17 @@ impl DisplayChunkGen for DisplayChunkGenHot {
                 .. Default::default()
             };
 
-            let mut empty_fbo = glium::framebuffer::EmptyFrameBuffer::new(display, 1, 1, None, None, false).unwrap();
-            empty_fbo.draw(&self.input_vbo, NO_INDICES, &self.tfb_program, &uniforms, &params).unwrap();
+            if glium::framebuffer::EmptyFrameBuffer::is_supported(display) {
+                let mut empty_fbo = glium::framebuffer::EmptyFrameBuffer::new(display, 1, 1, None, None, false).unwrap();
+                empty_fbo.draw(&self.input_vbo, NO_INDICES, &self.tfb_program, &uniforms, &params).unwrap();
+            }
+            else {
+                let rbo = glium::framebuffer::RenderBuffer::new(
+                    display, glium::texture::UncompressedFloatFormat::U8, 1, 1
+                ).unwrap();
+                let mut framebuffer = glium::framebuffer::SimpleFrameBuffer::new(display, &rbo).unwrap();
+                framebuffer.draw(&self.input_vbo, NO_INDICES, &self.tfb_program, &uniforms, &params).unwrap();
+            }
         }
 
         DisplayChunk {   
