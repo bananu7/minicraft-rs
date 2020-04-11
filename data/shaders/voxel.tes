@@ -43,8 +43,8 @@ void main()
 
     vec4 position = interpolate4D(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
 
-    float displacement = texture(depthMap, outData.texCoord).x;
-    position += displacement * 1.0;
+    vec3 displacement = inData[0].normal * texture(depthMap, outData.texCoord).x;
+    position += vec4(displacement * 0.2, 0.0);
 
     gl_Position = matrix * position;
 }
