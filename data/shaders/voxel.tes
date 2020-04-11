@@ -2,6 +2,9 @@
 
 layout(triangles, ccw) in;
 
+uniform mat4 matrix;
+uniform sampler2D depthMap;
+
 in TCSOut {
     vec3 modelspacePosition;
     vec3 normal;
@@ -39,11 +42,9 @@ void main()
     outData.texCoord = interpolate2D(inData[0].texCoord, inData[1].texCoord, inData[2].texCoord);
 
     vec4 position = interpolate4D(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
-    gl_Position = position;
-    //outData.worldspacePosition = position.xyz;
 
+    float displacement = texture(depthMap, outData.texCoord).x;
+    position += displacement * 1.0;
 
-    // Displace the vertex along the normal
-    //float Displacement = texture(gDisplacementMap, TexCoord_FS_in.xy).x;
-    //WorldPos_FS_in += Normal_FS_in * Displacement * gDispFactor;
+    gl_Position = matrix * position;
 }
