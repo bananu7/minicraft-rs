@@ -12,6 +12,13 @@ use crate::world::orientation::Orientation;
 use crate::render::util::pipeline::Pipeline;
 use crate::render::world::DisplayField;
 
+enum Strafe {
+    Stop, Left, Right
+}
+enum Fly {
+    Stop, Forward, Backward
+}
+
 pub struct BuildShipGameState {
     pipeline: RefCell<Pipeline>,
     cursor_grabbed: RefCell<bool>,
@@ -19,6 +26,9 @@ pub struct BuildShipGameState {
     field: RefCell<Field>,
     should_exit: bool,
     display_dirty: bool,
+
+    strafe: Strafe,
+    fly: Fly,
 }
 
 pub fn create_program(display : &glium::Display) -> glium::Program {
@@ -56,6 +66,9 @@ impl BuildShipGameState {
             field: std::cell::RefCell::new(setup()),
             should_exit: false,
             display_dirty: true,
+
+            strafe: Strafe::Stop,
+            fly: Fly::Stop,
         }
     }
 }
@@ -98,25 +111,28 @@ impl GameState for BuildShipGameState {
     }
 
     fn react_to_keyboard(&mut self, input: glutin::event::KeyboardInput) {
-        if input.state == glutin::event::ElementState::Released {
-            return;
-        }
-        {
-            let mut pip = self.pipeline.borrow_mut();
-            let key = input.scancode;
+        let key = input.scancode;
 
-            // first OSX, 2nd Windows
-            if key == 13 || key == 17 { // W
-                pip.camera.fly(0.2);
+        if input.state == glutin::event::ElementState::Released {
+            if key == 13 || key == 17 || key == 1 || key == 31 { // W or S
+                self.fly = Fly::Stop;
             }
-            else if key == 1 || key == 31 { // S
-                pip.camera.fly(-0.2);
+            else if key == 0 || key == 30 || key == 2 || key == 32 { // A or D
+                self.strafe = Strafe::Stop;
+            }
+        } else {
+            // first OSX, 2nd Windows
+            if key == 1 || key == 31 { // S
+                self.fly = Fly::Backward;
+            }
+            else if key == 13 || key == 17 { // W
+                self.fly = Fly::Forward;
             }
             else if key == 0 || key == 30 { // A
-                pip.camera.strafe(0.2);
+                self.strafe = Strafe::Left;
             }
             else if key == 2 || key == 32 { // D
-                pip.camera.strafe(-0.2);
+                self.strafe = Strafe::Right;
             }
             else if key == 3 || key == 33 { // F
                 let mut cg = self.cursor_grabbed.borrow_mut();
@@ -158,6 +174,20 @@ impl GameState for BuildShipGameState {
         if self.display_dirty {
             self.display_field.update(&self.field.borrow(), &display);
             self.display_dirty = false;
+        }
+
+        let mut pip = self.pipeline.borrow_mut();
+
+        match self.fly {
+            Fly::Forward => pip.camera.fly(0.2),
+            Fly::Backward => pip.camera.fly(-0.2),
+            _ => (),
+        }
+
+        match self.strafe {
+            Strafe::Left => pip.camera.strafe(0.2),
+            Strafe::Right => pip.camera.strafe(-0.2),
+            _ => (),
         }
 
         if self.should_exit { 
