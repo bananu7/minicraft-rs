@@ -1,5 +1,3 @@
-use std::time::{Instant};
-
 use crate::render::util::pipeline::Pipeline;
 
 use crate::world::coord::{OuterChunkCoord};
@@ -36,22 +34,10 @@ impl DisplayField {
             let hot = coord.eq(&OuterChunkCoord::new(0,0,1));
 
             if hot {
-                let start_time = Instant::now();
-
                 let dc = self.gen_hot.generate((*coord).clone(), chunk, display);
-
-                let delta = Instant::now() - start_time;
-                println!("Gen time hot: {}", delta.as_micros());
-
                 self.display_chunks.push(dc);
             } else {
-                let start_time = Instant::now();
-
                 let dc = self.gen_cold.generate((*coord).clone(), chunk, display);
-
-                let delta = Instant::now() - start_time;
-                println!("Gen time cold: {}", delta.as_micros());
-
                 self.display_chunks.push(dc);
             }
         }
