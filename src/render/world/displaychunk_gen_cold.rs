@@ -1,4 +1,5 @@
 use crate::render::world::display_chunk::{Vertex, DisplayChunk};
+use crate::render::world::traits::{DisplayChunkGen};
 
 use crate::world::{Chunk, SIZE, combine_coord};
 use crate::world::coord::{OuterChunkCoord, InnerChunkCoord, WorldCoord};
@@ -84,8 +85,10 @@ pub struct DisplayChunkGenCold {
 
 impl DisplayChunkGenCold {
     pub fn new(_display: &glium::Display) -> Self { DisplayChunkGenCold {} }
-    // Generate the display rendition for a chunk
-    pub fn generate(self: &mut Self, chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> DisplayChunk {
+}
+
+impl DisplayChunkGen for DisplayChunkGenCold {
+    fn generate(self: &mut Self, chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> DisplayChunk {
         let mut vertices = Vec::new();
 
         for x in 0..SIZE {

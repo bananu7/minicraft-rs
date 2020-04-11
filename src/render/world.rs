@@ -1,10 +1,12 @@
 use std::time::{Instant};
 
 use crate::render::util::pipeline::Pipeline;
-use crate::render::world::display_chunk::{DisplayChunk};
 
 use crate::world::coord::{OuterChunkCoord};
 use crate::world::{Field};
+
+use self::display_chunk::{DisplayChunk};
+use self::traits::{DisplayChunkGen};
 
 pub mod display_chunk;
 pub mod displaychunk_gen_cold;

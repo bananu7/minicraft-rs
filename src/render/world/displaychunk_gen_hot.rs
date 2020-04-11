@@ -4,6 +4,7 @@ use glium::{Surface};
 use glium::{uniform, implement_vertex};
 
 use crate::render::world::display_chunk::{Vertex, DisplayChunk};
+use crate::render::world::traits::{DisplayChunkGen};
 
 use crate::world::{Chunk, SIZE};
 use crate::world::coord::{OuterChunkCoord, InnerChunkCoord};
@@ -71,8 +72,10 @@ impl DisplayChunkGenHot {
             input_vbo: input_buffer,
         }
     }
+}
 
-    pub fn generate(self: &mut Self, chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> DisplayChunk {
+impl DisplayChunkGen for DisplayChunkGenHot {
+    fn generate(self: &mut Self, chunk_coord: OuterChunkCoord, chunk: &Chunk, display: &glium::Display) -> DisplayChunk {
         {
             for x in 0..SIZE {
                 for y in 0..SIZE {
