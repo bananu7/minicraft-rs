@@ -42,7 +42,7 @@ impl Game {
         self.current_state.react_to_mouse_move(delta);
     }
 
-    pub fn react_to_cursor_move(&mut self, pos: glutin::dpi::PhysicalPosition<f64>) {
+    pub fn react_to_cursor_move(&mut self, pos: glutin::dpi::LogicalPosition<f64>) {
         self.mouse_state.x = pos.x;
         self.mouse_state.y = pos.y;
     }
