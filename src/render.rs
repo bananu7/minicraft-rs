@@ -37,7 +37,11 @@ pub fn setup() {
                     return;
                 }
 
-                glutin::event::WindowEvent::CursorMoved { position, .. } =>game_state.react_to_cursor_move(position),
+                glutin::event::WindowEvent::CursorMoved { position, .. } => {
+                    let scale = display.gl_window().window().scale_factor();
+                    let logical_position = position.to_logical(scale);
+                    game_state.react_to_cursor_move(logical_position);
+                }
                 glutin::event::WindowEvent::KeyboardInput { input, .. } => game_state.react_to_keyboard(input),
                 glutin::event::WindowEvent::MouseInput { state, button, .. } => game_state.react_to_mouse_click(state, button),
 
