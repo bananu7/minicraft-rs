@@ -1,5 +1,7 @@
 #version 410 core
 
+uniform vec3 eye;
+
 layout (vertices = 3) out;
 
 in VSOut {
@@ -28,12 +30,17 @@ void main()
     //float EyeToVertexDistance1 = distance(gEyeWorldPos, WorldPos_ES_in[1]);
     //float EyeToVertexDistance2 = distance(gEyeWorldPos, WorldPos_ES_in[2]);
 
+    float distanceToEye = distance(inData[gl_InvocationID].modelspacePosition, eye);
 
+    float level = 1.0;
+    if (distanceToEye < 10.0) {
+        level = 10.0;
+    }
 
     // Calculate the tessellation levels
-    gl_TessLevelOuter[0] = 10.0;
-    gl_TessLevelOuter[1] = 10.0;
-    gl_TessLevelOuter[2] = 10.0;
+    gl_TessLevelOuter[0] = level;
+    gl_TessLevelOuter[1] = level;
+    gl_TessLevelOuter[2] = level;
     gl_TessLevelInner[0] = gl_TessLevelOuter[2];
 
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;

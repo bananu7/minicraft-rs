@@ -1,3 +1,5 @@
+use std::time::{Instant};
+
 use crate::render::util::pipeline::Pipeline;
 
 use crate::world::coord::{OuterChunkCoord};
@@ -19,6 +21,8 @@ pub struct DisplayField {
     normal_map: glium::texture::Texture2d,
     depth_map: glium::texture::Texture2d,
     color_map: glium::texture::CompressedSrgbTexture2d,
+
+    time: Instant,
 }
 
 fn load_image(path: &str) -> glium::texture::RawImage2d<u8> {
@@ -47,6 +51,8 @@ impl DisplayField {
             normal_map: normal_map,
             color_map: color_map,
             depth_map: depth_map,
+
+            time: Instant::now(),
         }
     }
 
@@ -70,7 +76,7 @@ impl DisplayField {
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
             // Temp
-            dc.draw(target, pip, &self.normal_map, &self.color_map, &self.depth_map);
+            dc.draw(target, pip, &self.normal_map, &self.color_map, &self.depth_map, self.time.elapsed().as_millis() as f32 / 1000.0);
         }
     }
 }

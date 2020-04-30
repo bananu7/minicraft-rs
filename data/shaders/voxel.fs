@@ -3,6 +3,9 @@
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 
+uniform vec3 eye;
+uniform float time;
+
 in TESOut {
     vec3 modelspacePosition;
     vec3 normal;
@@ -84,7 +87,7 @@ void main() {
     Light1.Color = vec3(1.0, 1.0, 1.0);
     Light1.AmbientIntensity = vec3(0.1, 0.1, 0.1);
     Light1.DiffuseIntensity = vec3(0.8, 0.8, 0.8);
-    Light1.Position = vec3(16, 10, 16);
+    Light1.Position = vec3(8.0 * sin(time) + 8.0, 10.0, 8.0 * cos(time) + 8.0);
 
     vec3 MaterialDiffuseReflectivity = vec3(1.0, 1.0, 1.0);
 
