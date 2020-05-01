@@ -26,10 +26,16 @@ pub struct DisplayChunk {
 }
 
 impl DisplayChunk {
-    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline) {
+    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline, normal_map: &glium::texture::Texture2d, color_map: &glium::texture::CompressedSrgbTexture2d, depth_map: &glium::texture::Texture2d, time: f32) {
         let matrix = pip.get_vp_matrix();
+
         let uniforms = uniform! {
             matrix: matrix,
+            normalMap: normal_map,
+            colorMap: color_map,
+            depthMap: depth_map,
+            eye: [pip.camera.position.x, pip.camera.position.y, pip.camera.position.z],
+            time: time,
         };
 
         const NO_INDICES: glium::index::NoIndices =

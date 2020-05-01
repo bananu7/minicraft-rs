@@ -55,7 +55,7 @@ impl Chunk {
     pub fn fill(&mut self) {
         for x in 0..SIZE {
             for z in 0..SIZE {
-                let e = ((x as f32 * z as f32).sin() + 1.0) * 3.0 + 1.0;
+                let e = (((x as f32 + z as f32) / 10.0).sin() + 1.0) * 3.0 + 1.0;
                 let h = e as i64;
 
                 for y in 0..h {

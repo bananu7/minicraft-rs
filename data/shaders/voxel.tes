@@ -2,14 +2,21 @@
 
 layout(triangles, ccw) in;
 
+uniform mat4 matrix;
+uniform sampler2D depthMap;
+
 in TCSOut {
-    vec3 color;
+    vec3 modelspacePosition;
+    vec3 normal;
     vec2 texCoord;
+    vec3 color;
 } inData[];
 
 out TESOut {
-    vec3 color;
+    vec3 modelspacePosition;
+    vec3 normal;
     vec2 texCoord;
+    vec3 color;
 } outData;
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
@@ -29,13 +36,15 @@ vec4 interpolate4D(vec4 v0, vec4 v1, vec4 v2)
 
 void main()
 {
-	outData.texCoord = interpolate2D(inData[0].texCoord, inData[1].texCoord, inData[2].texCoord);
-	outData.color = inData[0].color;
+    outData.modelspacePosition = inData[0].modelspacePosition;
+    outData.normal = inData[0].normal;
+    outData.color = inData[0].color;
+    outData.texCoord = interpolate2D(inData[0].texCoord, inData[1].texCoord, inData[2].texCoord);
 
-    gl_Position = interpolate4D(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
+    vec4 position = interpolate4D(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
 
+    vec3 displacement = inData[0].normal * texture(depthMap, outData.texCoord).x;
+    position += vec4(displacement * 0.2, 0.0);
 
-    // Displace the vertex along the normal
-    //float Displacement = texture(gDisplacementMap, TexCoord_FS_in.xy).x;
-    //WorldPos_FS_in += Normal_FS_in * Displacement * gDispFactor;
+    gl_Position = matrix * position;
 }

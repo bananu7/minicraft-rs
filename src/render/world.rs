@@ -1,3 +1,5 @@
+use std::time::{Instant};
+
 use crate::render::util::pipeline::Pipeline;
 
 use crate::world::coord::{OuterChunkCoord};
@@ -15,14 +17,42 @@ pub struct DisplayField {
     display_chunks: Vec<DisplayChunk>,
     gen_cold: displaychunk_gen_cold::DisplayChunkGenCold,
     gen_hot: displaychunk_gen_hot::DisplayChunkGenHot,
+
+    normal_map: glium::texture::Texture2d,
+    depth_map: glium::texture::Texture2d,
+    color_map: glium::texture::CompressedSrgbTexture2d,
+
+    time: Instant,
+}
+
+fn load_image(path: &str) -> glium::texture::RawImage2d<u8> {
+    let image = image::open(path)
+        .map(|i| i.to_rgba() )
+        .map_err(|_| () ).unwrap();
+
+    let image_dimensions = image.dimensions();
+    let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+    return image;
 }
 
 impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
+        // TEXTURE ----------------------------
+        let normal_map = glium::texture::Texture2d::new(display, load_image("data/normal.png")).unwrap();
+        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image("data/color.png")).unwrap();
+        let depth_map = glium::texture::Texture2d::new(display, load_image("data/depth.png")).unwrap();
+        // --------------------------------------
+
         DisplayField {
             display_chunks: Vec::new(),
             gen_cold: displaychunk_gen_cold::DisplayChunkGenCold::new(display),
             gen_hot: displaychunk_gen_hot::DisplayChunkGenHot::new(display),
+
+            normal_map: normal_map,
+            color_map: color_map,
+            depth_map: depth_map,
+
+            time: Instant::now(),
         }
     }
 
@@ -45,7 +75,8 @@ impl DisplayField {
 
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
-            dc.draw(target, pip);
+            // Temp
+            dc.draw(target, pip, &self.normal_map, &self.color_map, &self.depth_map, self.time.elapsed().as_millis() as f32 / 1000.0);
         }
     }
 }

@@ -1,38 +1,46 @@
 #version 410 core
 
+uniform vec3 eye;
+
 layout (vertices = 3) out;
 
 in VSOut {
-    vec3 color;
+    vec3 modelspacePosition;
+    vec3 normal;
     vec2 texCoord;
+    vec3 color;
 } inData[];
 
 out TCSOut {
-    vec3 color;
+    vec3 modelspacePosition;
+    vec3 normal;
     vec2 texCoord;
+    vec3 color;
 } outData[];
 
 void main()
 {
-    // Set the control points of the output patch
-    //TexCoord_ES_in[gl_InvocationID] = TexCoord_CS_in[gl_InvocationID];
-    //Normal_ES_in[gl_InvocationID] = Normal_CS_in[gl_InvocationID];
-    //WorldPos_ES_in[gl_InvocationID] = WorldPos_CS_in[gl_InvocationID];
-
-    outData[gl_InvocationID].color = inData[gl_InvocationID].color;
+    outData[gl_InvocationID].modelspacePosition = inData[gl_InvocationID].modelspacePosition;
+    outData[gl_InvocationID].normal = inData[gl_InvocationID].normal;
     outData[gl_InvocationID].texCoord = inData[gl_InvocationID].texCoord;
+    outData[gl_InvocationID].color = inData[gl_InvocationID].color;
 
     // Calculate the distance from the camera to the three control points
     //float EyeToVertexDistance0 = distance(gEyeWorldPos, WorldPos_ES_in[0]);
     //float EyeToVertexDistance1 = distance(gEyeWorldPos, WorldPos_ES_in[1]);
     //float EyeToVertexDistance2 = distance(gEyeWorldPos, WorldPos_ES_in[2]);
 
+    float distanceToEye = distance(inData[gl_InvocationID].modelspacePosition, eye);
 
+    float level = 1.0;
+    if (distanceToEye < 10.0) {
+        level = 10.0;
+    }
 
     // Calculate the tessellation levels
-    gl_TessLevelOuter[0] = 1.0;
-    gl_TessLevelOuter[1] = 1.0;
-    gl_TessLevelOuter[2] = 1.0;
+    gl_TessLevelOuter[0] = level;
+    gl_TessLevelOuter[1] = level;
+    gl_TessLevelOuter[2] = level;
     gl_TessLevelInner[0] = gl_TessLevelOuter[2];
 
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
