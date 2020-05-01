@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "blocks": [
+        {
+            "name": "bricks",
+            "normal": "data/blocks/bricks/normal.png",
+            "depth": "data/blocks/bricks/depth.png",
+            "color": "data/blocks/bricks/color.png"
+        },
+        {
+            "name": "gold",
+            "normal": "data/blocks/gold/normal.png",
+            "depth": "data/blocks/gold/depth.png",
+            "color": "data/blocks/gold/color.png"
+        }
+    ]
+}

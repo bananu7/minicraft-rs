@@ -8,6 +8,7 @@ use crate::world::{Field};
 use self::display_chunk::{DisplayChunk};
 use self::traits::{DisplayChunkGen};
 
+mod block_atlas;
 pub mod display_chunk;
 pub mod displaychunk_gen_cold;
 pub mod displaychunk_gen_hot;
@@ -38,9 +39,12 @@ fn load_image(path: &str) -> glium::texture::RawImage2d<u8> {
 impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
         // TEXTURE ----------------------------
-        let normal_map = glium::texture::Texture2d::new(display, load_image("data/normal.png")).unwrap();
-        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image("data/color.png")).unwrap();
-        let depth_map = glium::texture::Texture2d::new(display, load_image("data/depth.png")).unwrap();
+        let atlas = block_atlas::load_blocks("data/blocks.json").unwrap();
+        let block = &atlas.blocks[1];
+
+        let normal_map = glium::texture::Texture2d::new(display, load_image(&block.normal)).unwrap();
+        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image(&block.color)).unwrap();
+        let depth_map = glium::texture::Texture2d::new(display, load_image(&block.depth)).unwrap();
         // --------------------------------------
 
         DisplayField {
