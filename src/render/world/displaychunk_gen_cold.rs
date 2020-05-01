@@ -13,46 +13,55 @@ fn add_coord(position: [f32; 3], coord: &WorldCoord) -> [f32; 3] {
     ]
 }
 
-fn generate_cube(coord: WorldCoord) -> Vec<Vertex> {
+fn generate_cube(value: u64, coord: WorldCoord) -> Vec<Vertex> {
     let green = [0.259, 0.6, 0.012];
     let brown = [0.388, 0.306, 0.161];
 
+    let tex_in_atlas = 2;
+    let tc_width = 1.0 / (tex_in_atlas as f32);
+    let tc_height = 1.0 / (tex_in_atlas as f32);
+
+    let tc_left = ((value-1) % tex_in_atlas) as f32 * tc_width;
+    let tc_bottom = ((value-1) / tex_in_atlas) as f32 * tc_width;
+    let tc_right = tc_left + tc_width;
+    let tc_top = tc_bottom + tc_height;
+
     let vertex_list = [
         // Front
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [0., 0.] },
-        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [0., 1.] },
-        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [1., 1.] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [1., 0.] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, 0.0, -1.0], texCoord: [tc_right, tc_bottom] },
 
         // Back
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [0., 0.] },
-        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [0., 1.] },
-        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [1., 1.] },
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [1., 0.] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, 0.0, 1.0], texCoord: [tc_right, tc_bottom] },
 
         // Top
-        Vertex { position: [0.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [0., 0.] },
-        Vertex { position: [0.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [0., 1.] },
-        Vertex { position: [1.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [1., 1.] },
-        Vertex { position: [1.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [1., 0.] },
+        Vertex { position: [0.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [0.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [1.0, 1.0, 1.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [1.0, 1.0, 0.0], color: green, normal: [0.0, 1.0, 0.0], texCoord: [tc_right, tc_bottom] },
 
         // Bottom
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [0., 0.] },
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [0., 1.] },
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [1., 1.] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [1., 0.] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [0.0, -1.0, 0.0], texCoord: [tc_right, tc_bottom] },
 
         // Right
-        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [0., 0.] },
-        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [0., 1.] },
-        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [1., 1.] },
-        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [1., 0.] },
+        Vertex { position: [1.0, 0.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [1.0, 1.0, 1.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [1.0, 1.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [1.0, 0.0, 0.0], color: brown, normal: [1.0, 0.0, 0.0], texCoord: [tc_right, tc_bottom] },
 
         // Left
-        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [0., 0.] },
-        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [0., 1.] },
-        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [1., 1.] },
-        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [1., 0.] },
+        Vertex { position: [0.0, 0.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [tc_left, tc_bottom] },
+        Vertex { position: [0.0, 1.0, 1.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [tc_left, tc_top] },
+        Vertex { position: [0.0, 1.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [tc_right, tc_top] },
+        Vertex { position: [0.0, 0.0, 0.0], color: brown, normal: [-1.0, 0.0, 0.0], texCoord: [tc_right, tc_bottom] },
     ];
 
     let translated_list: Vec<Vertex> = vertex_list.iter().map(|v| {
@@ -128,7 +137,7 @@ impl DisplayChunkGen for DisplayChunkGenCold {
                     }
 
                     {
-                        vertices.extend(generate_cube(combine_coord(coord, chunk_coord.clone())));
+                        vertices.extend(generate_cube(block.value, combine_coord(coord, chunk_coord.clone())));
                     }
                 }
             }
