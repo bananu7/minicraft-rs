@@ -26,7 +26,7 @@ pub struct DisplayChunk {
 }
 
 impl DisplayChunk {
-    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline, normal_map: &glium::texture::Texture2d, color_map: &glium::texture::CompressedSrgbTexture2d, depth_map: &glium::texture::Texture2d, time: f32) {
+    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline, normal_map: &glium::texture::Texture2d, color_map: &glium::texture::SrgbTexture2d, depth_map: &glium::texture::Texture2d, time: f32) {
         let matrix = pip.get_vp_matrix();
 
         let uniforms = uniform! {

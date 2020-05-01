@@ -14,14 +14,70 @@ pub mod displaychunk_gen_cold;
 pub mod displaychunk_gen_hot;
 pub mod traits;
 
+pub struct AtlasTextures {
+    color: glium::texture::SrgbTexture2d,
+    normal: glium::texture::Texture2d,
+    depth: glium::texture::Texture2d,
+}
+
+pub fn build_atlas_textures(display: &glium::Display, atlas: &self::block_atlas::BlockAtlas) -> AtlasTextures {
+
+    let color_atlas = glium::texture::srgb_texture2d::SrgbTexture2d::empty_with_format(display,
+                                           glium::texture::SrgbFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           512, 512).unwrap();
+
+    let normal_atlas = glium::Texture2d::empty_with_format(display,
+                                           glium::texture::UncompressedFloatFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           512, 512).unwrap();
+
+    let depth_atlas = glium::Texture2d::empty_with_format(display,
+                                           glium::texture::UncompressedFloatFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           512, 512).unwrap();
+
+    let mut count = 0;
+    for block in &atlas.blocks {
+        // TODO make sure images are 256x256
+
+        let atlas_size = 512/256;
+
+        let dest_rect = glium::Rect {
+            left: (count % atlas_size) * 256,
+            bottom: (count / atlas_size) * 256,
+            width: 256,
+            height: 256,
+        };
+
+        let color_map = load_image(&block.color);        
+        color_atlas.write(dest_rect, color_map);
+        unsafe { color_atlas.generate_mipmaps() };
+
+        let normal_map = load_image(&block.normal);
+        normal_atlas.write(dest_rect, normal_map);
+        unsafe { normal_atlas.generate_mipmaps() };
+
+        let depth_map = load_image(&block.depth);
+        depth_atlas.write(dest_rect, depth_map);
+        unsafe { depth_atlas.generate_mipmaps() };
+
+        count += 1;
+    }
+
+    AtlasTextures {
+        color: color_atlas,
+        normal: normal_atlas,
+        depth: depth_atlas,
+    }
+}
+
 pub struct DisplayField {
     display_chunks: Vec<DisplayChunk>,
     gen_cold: displaychunk_gen_cold::DisplayChunkGenCold,
     gen_hot: displaychunk_gen_hot::DisplayChunkGenHot,
 
-    normal_map: glium::texture::Texture2d,
-    depth_map: glium::texture::Texture2d,
-    color_map: glium::texture::CompressedSrgbTexture2d,
+    atlas_textures: AtlasTextures,
 
     time: Instant,
 }
@@ -40,22 +96,15 @@ impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
         // TEXTURE ----------------------------
         let atlas = block_atlas::load_blocks("data/blocks.json").unwrap();
-        let block = &atlas.blocks[1];
+        let textures = build_atlas_textures(display, &atlas);
 
-        let normal_map = glium::texture::Texture2d::new(display, load_image(&block.normal)).unwrap();
-        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image(&block.color)).unwrap();
-        let depth_map = glium::texture::Texture2d::new(display, load_image(&block.depth)).unwrap();
         // --------------------------------------
 
         DisplayField {
             display_chunks: Vec::new(),
             gen_cold: displaychunk_gen_cold::DisplayChunkGenCold::new(display),
             gen_hot: displaychunk_gen_hot::DisplayChunkGenHot::new(display),
-
-            normal_map: normal_map,
-            color_map: color_map,
-            depth_map: depth_map,
-
+            atlas_textures: textures,
             time: Instant::now(),
         }
     }
@@ -80,7 +129,14 @@ impl DisplayField {
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
             // Temp
-            dc.draw(target, pip, &self.normal_map, &self.color_map, &self.depth_map, self.time.elapsed().as_millis() as f32 / 1000.0);
+            dc.draw(
+                target,
+                pip,
+                &self.atlas_textures.normal,
+                &self.atlas_textures.color,
+                &self.atlas_textures.depth,
+                self.time.elapsed().as_millis() as f32 / 1000.0
+            );
         }
     }
 }
