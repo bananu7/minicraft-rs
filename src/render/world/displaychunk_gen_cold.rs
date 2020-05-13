@@ -17,7 +17,7 @@ fn generate_cube(value: u64, coord: WorldCoord) -> Vec<Vertex> {
     let green = [0.259, 0.6, 0.012];
     let brown = [0.388, 0.306, 0.161];
 
-    let tex_in_atlas = 2;
+    let tex_in_atlas = 4;
     let tc_width = 1.0 / (tex_in_atlas as f32);
     let tc_height = 1.0 / (tex_in_atlas as f32);
 

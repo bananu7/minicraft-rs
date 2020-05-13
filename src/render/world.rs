@@ -22,32 +22,33 @@ pub struct AtlasTextures {
 
 pub fn build_atlas_textures(display: &glium::Display, atlas: &self::block_atlas::BlockAtlas) -> AtlasTextures {
 
+    let atlas_size = 1024; // power-of-two
+    let tex_size = 256; // TODO make sure images are 256x256
+
     let color_atlas = glium::texture::srgb_texture2d::SrgbTexture2d::empty_with_format(display,
                                            glium::texture::SrgbFormat::U8U8U8U8,
                                            glium::texture::MipmapsOption::EmptyMipmaps,
-                                           512, 512).unwrap();
+                                           atlas_size, atlas_size).unwrap();
 
     let normal_atlas = glium::Texture2d::empty_with_format(display,
                                            glium::texture::UncompressedFloatFormat::U8U8U8U8,
                                            glium::texture::MipmapsOption::EmptyMipmaps,
-                                           512, 512).unwrap();
+                                           atlas_size, atlas_size).unwrap();
 
     let depth_atlas = glium::Texture2d::empty_with_format(display,
                                            glium::texture::UncompressedFloatFormat::U8U8U8U8,
                                            glium::texture::MipmapsOption::EmptyMipmaps,
-                                           512, 512).unwrap();
+                                           atlas_size, atlas_size).unwrap();
 
     let mut count = 0;
     for block in &atlas.blocks {
-        // TODO make sure images are 256x256
-
-        let atlas_size = 512/256;
+        let atlas_num = atlas_size/tex_size;
 
         let dest_rect = glium::Rect {
-            left: (count % atlas_size) * 256,
-            bottom: (count / atlas_size) * 256,
-            width: 256,
-            height: 256,
+            left: (count % atlas_num) * tex_size,
+            bottom: (count / atlas_num) * tex_size,
+            width: tex_size,
+            height: tex_size,
         };
 
         let color_map = load_image(&block.color);        

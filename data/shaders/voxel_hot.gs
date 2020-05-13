@@ -19,7 +19,7 @@ void main() {
         return;
 
     // 2by2
-    const int tex_in_atlas = 2;
+    const int tex_in_atlas = 4;
     const float tc_width = 1.0 / float(tex_in_atlas);
     const float tc_height = 1.0 / float(tex_in_atlas);
 
