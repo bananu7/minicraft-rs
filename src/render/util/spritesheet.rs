@@ -131,10 +131,8 @@ impl DisplaySpriteSheet {
         const NO_INDICES: glium::index::NoIndices =
             glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
 
-        let screen_width = 800.0;
-        let screen_height  = 600.0;
-
-        let camera = CameraOrtho2D::new(vec2(screen_width, screen_height), vec2(0.0, 0.0));
+        let (screen_width, screen_height) = target.get_dimensions();
+        let camera = CameraOrtho2D::new(vec2(screen_width as f32, screen_height as f32), vec2(0.0, 0.0));
 
         let uniforms = uniform! {
             matrix: glm_mat4_to_raw_array(camera.calculate_view()),
