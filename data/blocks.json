@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "blocks": [
+        {
+            "name": "debug",
+            "normal": "data/blocks/debug/normal.png",
+            "depth": "data/blocks/debug/depth.png",
+            "color": "data/blocks/debug/color.png"
+        },
+        {
+            "name": "bricks",
+            "normal": "data/blocks/bricks/normal.png",
+            "depth": "data/blocks/bricks/depth.png",
+            "color": "data/blocks/bricks/color.png"
+        },
+        {
+            "name": "gold",
+            "normal": "data/blocks/gold/normal.png",
+            "depth": "data/blocks/gold/depth.png",
+            "color": "data/blocks/gold/color.png"
+        },
+        {
+            "name": "cobblestone",
+            "normal": "data/blocks/cobblestone/normal.png",
+            "depth": "data/blocks/cobblestone/depth.png",
+            "color": "data/blocks/cobblestone/color.png"
+        },
+        {
+            "name": "grass",
+            "normal": "data/blocks/grass/normal.png",
+            "depth": "data/blocks/grass/depth.png",
+            "color": "data/blocks/grass/color.png"
+        }
+    ]
+}

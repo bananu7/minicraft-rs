@@ -5,22 +5,74 @@ use crate::render::util::pipeline::Pipeline;
 use crate::world::coord::{OuterChunkCoord};
 use crate::world::{Field};
 
-use self::display_chunk::{DisplayChunk};
+use self::display_chunk::{DisplayChunk, AtlasTextures};
 use self::traits::{DisplayChunkGen};
 
+mod block_atlas;
 pub mod display_chunk;
 pub mod displaychunk_gen_cold;
 pub mod displaychunk_gen_hot;
 pub mod traits;
+
+pub fn build_atlas_textures(display: &glium::Display, atlas: &self::block_atlas::BlockAtlas) -> AtlasTextures {
+
+    let atlas_size = 1024; // power-of-two
+    let tex_size = 256; // TODO make sure images are 256x256
+
+    let color_atlas = glium::texture::srgb_texture2d::SrgbTexture2d::empty_with_format(display,
+                                           glium::texture::SrgbFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           atlas_size, atlas_size).unwrap();
+
+    let normal_atlas = glium::Texture2d::empty_with_format(display,
+                                           glium::texture::UncompressedFloatFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           atlas_size, atlas_size).unwrap();
+
+    let depth_atlas = glium::Texture2d::empty_with_format(display,
+                                           glium::texture::UncompressedFloatFormat::U8U8U8U8,
+                                           glium::texture::MipmapsOption::EmptyMipmaps,
+                                           atlas_size, atlas_size).unwrap();
+
+    let mut count = 0;
+    for block in &atlas.blocks {
+        let atlas_num = atlas_size/tex_size;
+
+        let dest_rect = glium::Rect {
+            left: (count % atlas_num) * tex_size,
+            bottom: (count / atlas_num) * tex_size,
+            width: tex_size,
+            height: tex_size,
+        };
+
+        let color_map = load_image(&block.color);        
+        color_atlas.write(dest_rect, color_map);
+        unsafe { color_atlas.generate_mipmaps() };
+
+        let normal_map = load_image(&block.normal);
+        normal_atlas.write(dest_rect, normal_map);
+        unsafe { normal_atlas.generate_mipmaps() };
+
+        let depth_map = load_image(&block.depth);
+        depth_atlas.write(dest_rect, depth_map);
+        unsafe { depth_atlas.generate_mipmaps() };
+
+        count += 1;
+    }
+
+    AtlasTextures {
+        color: color_atlas,
+        normal: normal_atlas,
+        depth: depth_atlas,
+    }
+}
 
 pub struct DisplayField {
     display_chunks: Vec<DisplayChunk>,
     gen_cold: displaychunk_gen_cold::DisplayChunkGenCold,
     gen_hot: displaychunk_gen_hot::DisplayChunkGenHot,
 
-    normal_map: glium::texture::Texture2d,
-    depth_map: glium::texture::Texture2d,
-    color_map: glium::texture::CompressedSrgbTexture2d,
+    atlas_textures: AtlasTextures,
 
     time: Instant,
 }
@@ -38,20 +90,16 @@ fn load_image(path: &str) -> glium::texture::RawImage2d<u8> {
 impl DisplayField {
     pub fn new(display: &glium::Display) -> Self {
         // TEXTURE ----------------------------
-        let normal_map = glium::texture::Texture2d::new(display, load_image("data/normal.png")).unwrap();
-        let color_map = glium::texture::CompressedSrgbTexture2d::new(display, load_image("data/color.png")).unwrap();
-        let depth_map = glium::texture::Texture2d::new(display, load_image("data/depth.png")).unwrap();
+        let atlas = block_atlas::load_blocks("data/blocks.json").unwrap();
+        let textures = build_atlas_textures(display, &atlas);
+
         // --------------------------------------
 
         DisplayField {
             display_chunks: Vec::new(),
             gen_cold: displaychunk_gen_cold::DisplayChunkGenCold::new(display),
             gen_hot: displaychunk_gen_hot::DisplayChunkGenHot::new(display),
-
-            normal_map: normal_map,
-            color_map: color_map,
-            depth_map: depth_map,
-
+            atlas_textures: textures,
             time: Instant::now(),
         }
     }
@@ -76,7 +124,12 @@ impl DisplayField {
     pub fn draw(self: &Self, target: &mut glium::Frame, _display: &glium::Display, pip: &Pipeline) {
         for dc in &self.display_chunks {        
             // Temp
-            dc.draw(target, pip, &self.normal_map, &self.color_map, &self.depth_map, self.time.elapsed().as_millis() as f32 / 1000.0);
+            dc.draw(
+                target,
+                pip,
+                &self.atlas_textures,
+                self.time.elapsed().as_millis() as f32 / 1000.0
+            );
         }
     }
 }

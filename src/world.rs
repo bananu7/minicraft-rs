@@ -58,8 +58,9 @@ impl Chunk {
                 let e = (((x as f32 + z as f32) / 10.0).sin() + 1.0) * 3.0 + 1.0;
                 let h = e as i64;
 
+                let v = if x % 2 == 0 { 5 } else { 5 };
                 for y in 0..h {
-                    *self.get_mut(&InnerChunkCoord::new(x,y,z)) = Block { value: 1, orientation: Orientation::YPlus };
+                    *self.get_mut(&InnerChunkCoord::new(x,y,z)) = Block { value: v, orientation: Orientation::YPlus };
                 }
             }
         }
