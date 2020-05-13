@@ -5,7 +5,7 @@ use crate::render::util::pipeline::Pipeline;
 use crate::world::coord::{OuterChunkCoord};
 use crate::world::{Field};
 
-use self::display_chunk::{DisplayChunk};
+use self::display_chunk::{DisplayChunk, AtlasTextures};
 use self::traits::{DisplayChunkGen};
 
 mod block_atlas;
@@ -13,12 +13,6 @@ pub mod display_chunk;
 pub mod displaychunk_gen_cold;
 pub mod displaychunk_gen_hot;
 pub mod traits;
-
-pub struct AtlasTextures {
-    color: glium::texture::SrgbTexture2d,
-    normal: glium::texture::Texture2d,
-    depth: glium::texture::Texture2d,
-}
 
 pub fn build_atlas_textures(display: &glium::Display, atlas: &self::block_atlas::BlockAtlas) -> AtlasTextures {
 
@@ -133,9 +127,7 @@ impl DisplayField {
             dc.draw(
                 target,
                 pip,
-                &self.atlas_textures.normal,
-                &self.atlas_textures.color,
-                &self.atlas_textures.depth,
+                &self.atlas_textures,
                 self.time.elapsed().as_millis() as f32 / 1000.0
             );
         }

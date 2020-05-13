@@ -21,19 +21,25 @@ pub struct Vertex {
 }
 implement_vertex!(Vertex, position, color, normal, texCoord);
 
+pub struct AtlasTextures {
+    pub color: glium::texture::SrgbTexture2d,
+    pub normal: glium::texture::Texture2d,
+    pub depth: glium::texture::Texture2d,
+}
+
 pub struct DisplayChunk {
     pub vbo: glium::VertexBuffer<Vertex>,
 }
 
 impl DisplayChunk {
-    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline, normal_map: &glium::texture::Texture2d, color_map: &glium::texture::SrgbTexture2d, depth_map: &glium::texture::Texture2d, time: f32) {
+    pub fn draw(self: &Self, target: &mut glium::Frame, pip: &Pipeline, textures: &AtlasTextures, time: f32) {
         let matrix = pip.get_vp_matrix();
 
         let uniforms = uniform! {
             matrix: matrix,
-            normalMap: normal_map,
-            colorMap: color_map,
-            depthMap: depth_map,
+            normalMap: &textures.normal,
+            colorMap: &textures.color,
+            depthMap: &textures.depth,
             eye: [pip.camera.position.x, pip.camera.position.y, pip.camera.position.z],
             time: time,
         };
