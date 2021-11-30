@@ -1,5 +1,7 @@
 use super::traits::*;
 use glium::Surface;
+use gltf::Semantic;
+
 use crate::render::gui::*;
 use crate::render::util::rect::*;
 use crate::render::object::*;
@@ -66,6 +68,23 @@ impl GameState for ViewObjectState {
                                 (70.0, y)
                             );
                             y += 20.0;
+
+                            for (attribute, attr_acc) in primitive.attributes() {
+                                let attr_str = match &attribute {
+                                    Semantic::Normals => "normal".to_string(),
+                                    Semantic::Positions => "position".to_string(),
+                                    Semantic::Colors(n) => format!("color ({})", &n),
+                                    Semantic::TexCoords(unit) => format!("texcoord (unit {})", &unit),
+
+                                    _ => "unknown".to_string(),
+                                };
+
+                                self.gui.label(
+                                    &format!("- {}", attr_str),
+                                    (110.0, y)
+                                );
+                                y += 20.0;
+                            }
                         }
                     }
                 }
