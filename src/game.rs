@@ -2,10 +2,12 @@
 pub mod traits;
 pub mod menu_state;
 pub mod build_ship_state;
+pub mod view_object_state;
 
 pub use self::traits::*;
 pub use self::build_ship_state::BuildShipGameState;
 pub use self::menu_state::MenuState;
+pub use self::view_object_state::ViewObjectState;
 
 use glium::glutin;
 
@@ -23,6 +25,7 @@ fn construct_next_state(tag: GameStateTag, display: &glium::Display) -> Result<B
     match tag {
         GameStateTag::BuildShip => Ok(Box::new(BuildShipGameState::new(&display))),
         GameStateTag::Menu => Ok(Box::new(MenuState::new(&display)?)),
+        GameStateTag::ViewObject => Ok(Box::new(ViewObjectState::new(&display)?)),
     }
 }
 

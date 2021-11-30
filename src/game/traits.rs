@@ -34,4 +34,5 @@ pub trait GameState {
 pub enum GameStateTag {
     Menu,
     BuildShip,
+    ViewObject,
 }

@@ -39,15 +39,18 @@ impl GameState for MenuState {
 
         self.gui.begin(ms);
 
-        self.gui.label(&format!("Delta: {}", self.last_delta.as_micros()), (100.0, 300.0));
 
         let mut change_state = None;
 
         if self.gui.button("Build ship!", Rect::new(100.0, 100.0, 40.0, 40.0))  {
             change_state = Some(GameStateTag::BuildShip);
         }
+        if self.gui.button("View object", Rect::new(100.0, 200.0, 40.0, 40.0))  {
+            change_state = Some(GameStateTag::ViewObject);
+        }
 
-        self.gui.label(&format!("Mouse: ({}, {})", ms.x, ms.y), (100.0, 200.0));
+        self.gui.label(&format!("Mouse: ({}, {})", ms.x, ms.y), (100.0, 300.0));
+        self.gui.label(&format!("Delta: {}", self.last_delta.as_micros()), (100.0, 400.0));
 
         return change_state;
     }

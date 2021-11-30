@@ -2,6 +2,7 @@ use glium::{glutin};
 
 pub mod camera;
 pub mod gui;
+pub mod object;
 pub mod util;
 pub mod world;
 
@@ -10,7 +11,7 @@ use crate::game::Game;
 pub fn setup() {
     let events_loop = glutin::event_loop::EventLoop::new();
     let window = glutin::window::WindowBuilder::new()   
-        .with_inner_size(glutin::dpi::LogicalSize{ width: 800.0, height: 600.0 });
+        .with_inner_size(glutin::dpi::LogicalSize{ width: 1280.0, height: 800.0 });
     let context = glutin::ContextBuilder::new()
         .with_vsync(true);
     //    .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (4, 4)));
