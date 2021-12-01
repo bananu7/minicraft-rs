@@ -1,5 +1,6 @@
 pub mod rect;
 pub mod pipeline;
+pub mod pipeline_util;
 pub mod spritesheet;
 
 use glm::*;

@@ -1,23 +1,38 @@
 use super::traits::*;
 use glium::Surface;
 use gltf::Semantic;
+use core::cell::RefCell;
 
 use crate::render::gui::*;
 use crate::render::util::rect::*;
 use crate::render::object::*;
+use crate::render::util::pipeline::*;
+use crate::render::util::pipeline_util::*;
 
 pub struct ViewObjectState {
     gui: Gui,
     object: Object,
+
+    display_object: DisplayObject,
+    pipeline: RefCell<Pipeline>,
 }
 
 impl ViewObjectState {
     pub fn new(display: &glium::backend::glutin::Display) -> Result<Self, ()> {
         let object = Object::new("data/objects/chest.gltf")?;
 
+        let pipeline = easy_pipeline_vsfs(
+            "data/shaders/object.vs",
+            "data/shaders/object.fs",
+            &display
+        );
+        pipeline.borrow_mut().camera.position.z = -10.0;
+
         Ok(ViewObjectState {
             gui: Gui::new(&display)?,
-            object: object
+            display_object: DisplayObject::new(&object, &display),
+            object: object,
+            pipeline: pipeline,
         })
     }
 }
@@ -27,6 +42,8 @@ impl GameState for ViewObjectState {
         {
             let mut target = display.draw();
             target.clear_color_and_depth((0.0, 0.4, 0.1, 1.0), 1.0);
+
+            self.display_object.draw(&self.pipeline.borrow(), &mut target);
 
             self.gui.draw(&mut target)?;
             target.finish().unwrap();
@@ -80,7 +97,7 @@ impl GameState for ViewObjectState {
                                 };
 
                                 self.gui.label(
-                                    &format!("- {}", attr_str),
+                                    &format!("- {} | count: {}", attr_str, attr_acc.count()),
                                     (110.0, y)
                                 );
                                 y += 20.0;
