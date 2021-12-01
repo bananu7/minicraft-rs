@@ -31,31 +31,37 @@ implement_vertex!(Vertex, position);
 
 pub struct DisplayObject {
     pub vbo: glium::VertexBuffer<Vertex>,
+    pub ibo: glium::IndexBuffer<u32>,
 }
 
 impl DisplayObject {
     pub fn new(o: &Object, display: &glium::Display) -> DisplayObject {
-        let mut vertices = Vec::new();
-
         let scene = &o.document.scenes().next().unwrap();         // TODO only gets first scene
         let node = &scene.nodes().next().unwrap();                // TODO only gets first node
         let mesh = &node.mesh().unwrap();                // TODO requires a mesh present
         let primitive = &mesh.primitives().next().unwrap();       // TODO only gets first primitive
 
         let reader = &primitive.reader(|buf| Some(&o.buffers[buf.index()]) );
+
+        let mut vertices = Vec::new();
         for position in reader.read_positions().unwrap() {
             vertices.push(Vertex { position: position });
         }
 
-        let vbo = glium::VertexBuffer::new(display, &vertices).unwrap();
+        let mut indices = Vec::<u32>::new();
+        match reader.read_indices().unwrap() {
+            gltf::mesh::util::ReadIndices::U8(rd) => for index in rd { indices.push(index.into())},
+            gltf::mesh::util::ReadIndices::U16(rd) => for index in rd { indices.push(index.into())},
+            gltf::mesh::util::ReadIndices::U32(rd) => for index in rd { indices.push(index)},
+        };
 
-        DisplayObject { vbo }
+        let vbo = glium::VertexBuffer::new(display, &vertices).unwrap();
+        let ibo = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &indices).unwrap();
+
+        DisplayObject { vbo, ibo }
     }
 
     pub fn draw(&mut self, pip: &Pipeline, target: &mut glium::Frame) {
-        const NO_INDICES: glium::index::NoIndices =
-            glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
-
         let matrix = pip.get_vp_matrix();
 
         let uniforms = uniform! {
@@ -73,6 +79,6 @@ impl DisplayObject {
             .. Default::default()
         };
 
-        target.draw(&self.vbo, NO_INDICES, &pip.get_program(), &uniforms, &params).unwrap();
+        target.draw(&self.vbo, &self.ibo, &pip.get_program(), &uniforms, &params).unwrap();
     }
 }
