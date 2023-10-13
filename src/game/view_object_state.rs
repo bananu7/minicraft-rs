@@ -80,7 +80,7 @@ impl GameState for ViewObjectState {
                                 };
 
                                 self.gui.label(
-                                    &format!("- {}", attr_str),
+                                    &format!("- {} | count: {}", attr_str, attr_acc.count()),
                                     (110.0, y)
                                 );
                                 y += 20.0;
